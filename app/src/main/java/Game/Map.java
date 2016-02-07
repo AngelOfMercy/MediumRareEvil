@@ -2,18 +2,20 @@ package Game;
 
 import Game.Utility.Point;
 
+import java.util.HashSet;
 import java.util.ArrayList;
 
 import Game.Tiles.*;
 import Pieces.Piece;
+import Game.Game.Direction;
 
 /**
  * Created by AngelOfMercy on 28/01/2016.
  */
 public class Map{
 
-    private ArrayList<Tile> map = null;
-    private char[][] DEFAULT_TILE_SET = null; //TODO
+    private HashSet<Tile> map = null;
+
     private ArrayList<Piece> pieces = new ArrayList<Piece>();
 
     private int width, height;
@@ -23,12 +25,20 @@ public class Map{
     //Constructors
     //-------------------------------------------------------------
 
+    /**
+     * Constructs a map object which is completely blank, using a given height and width.
+     * @param width The width of a the map.
+     * @param height The height of the map.
+     */
     public Map(int width, int height){
 
+        //Store the maps width and height.
         this.width = width;
         this.height = height;
 
-        this.map = new ArrayList<Tile>();
+
+        //Create an empty list of tiles.
+        this.map = new HashSet<Tile>();
 
         for(int x = 0; x < width; x++){
             for(int y = 0; y < height; y++){
@@ -38,7 +48,7 @@ public class Map{
 
     }
 
-    public Map(ArrayList<Tile> tile_set){
+    public Map(HashSet<Tile> tile_set){
         map = tile_set;
     }
 
@@ -48,13 +58,19 @@ public class Map{
 
     //MOVEMENT
 
+    /**
+     * Moves the given piece one tile in the give direction.
+     * @param p
+     * @param d
+     * @return If successful, returns true.
+     */
     public boolean movePiece(Piece p, Game.Direction d){
         Point loc = p.getLocation();//Get 'p's X and Y Location
 
-        Point targetTile = getTargetTile(loc, d);
+        Tile targetTile = getAdjacentTile(loc, d);
 
-        if(getTileAt(targetTile.x, targetTile.y).getPiece() != null){
-            p.setLocation(new Point(targetTile.x, targetTile.y));
+        if(targetTile != null && targetTile.containsPiece()){
+            p.setLocation(new Point(targetTile.getX(), targetTile.getY()));
             return true;
         }
         else{
@@ -63,24 +79,20 @@ public class Map{
 
     }
 
-    private Point getTargetTile(Point loc, Game.Direction d){
+    private Tile getAdjacentTile(Point loc, Game.Direction d){
         int x = loc.x, y = loc.y;
 
-        //TODO change to a switch
-        if(d == Game.Direction.UP){
-            y = y-1;
+        switch(d){
+            case UP:
+                y = y-1;
+            case DOWN:
+                y = y+1;
+            case LEFT:
+                x = x - 1;
+            case RIGHT:
+                x = x + 1;
         }
-        else if (d == Game.Direction.DOWN){
-            y = y+1;
-        }
-        else if(d == Game.Direction.LEFT){
-            x = x-1;
-        }
-        else if(d == Game.Direction.RIGHT){
-            x = x+1;
-        }
-
-        return new Point(x, y);
+        return getTileAt(x, y);
     }
 
     public ArrayList<Tile> getValidMovement(Piece p){
