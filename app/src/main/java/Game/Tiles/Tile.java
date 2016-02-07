@@ -7,7 +7,7 @@ import Game.Map;
 /**
  * Created by AngelOfMercy on 28/01/2016.
  */
-public abstract class Tile {
+public abstract class Tile implements Comparable<Tile> {
 
     private int x = -1, y = -1;
     private Piece p = null;
@@ -27,6 +27,29 @@ public abstract class Tile {
 
     public Piece getPiece(){
         return p;
+    }
+
+    public boolean equals(Tile t){
+        return t.getX() == x &&
+                t.getY() == y &&
+                p.equals(p);
+    }
+
+    /**
+     * Returns true, if the tile stores a piece in it.
+     * @return
+     */
+    public boolean containsPiece(){
+        return p != null;
+    }
+
+    /**
+     * Returns true if the tile contains the passed piece.
+     * @param p
+     * @return
+     */
+    public boolean containsPiece(Piece p){
+        return p.equals(this.p);
     }
 
 }
