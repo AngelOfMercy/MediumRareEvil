@@ -13,6 +13,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.ImageView;
+import Game.Game.Direction;
+import Animation.AnimationHandler;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -38,22 +40,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        //init animations (just load prewritten XML files)
-        animUp = AnimationUtils.loadAnimation(getApplicationContext(),
-                R.anim.move_up);
-        animDown = AnimationUtils.loadAnimation(getApplicationContext(),
-                R.anim.move_down);
-        animLeft = AnimationUtils.loadAnimation(getApplicationContext(),
-                R.anim.move_left);
-        animRight = AnimationUtils.loadAnimation(getApplicationContext(),
-                R.anim.move_right);
-
-        //assign each animation a listener with it's direction parameter (1,2,3,4)
-        animUp.setAnimationListener(new Updater(1));
-        animDown.setAnimationListener(new Updater(2));
-        animLeft.setAnimationListener(new Updater(3));
-        animRight.setAnimationListener(new Updater(4));
 
         //init cursor image
         image = (ImageView) findViewById(R.id.cursorView);
@@ -82,101 +68,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void moveCursorUp(View view) { image.startAnimation(animUp); }
-
+    //These methods use AnimationHandler to animate the cursor
+    public void moveCursorUp(View view) {
+        AnimationHandler anim = new AnimationHandler(Direction.UP, this, image);
+        anim.play();
+    }
     public void moveCursorDown(View view){
-        image.startAnimation(animDown);
+        AnimationHandler anim = new AnimationHandler(Direction.DOWN, this, image);
+        anim.play();
     }
-
     public void moveCursorLeft(View view){
-        image.startAnimation(animLeft);
+        AnimationHandler anim = new AnimationHandler(Direction.LEFT, this, image);
+        anim.play();
     }
-
     public void moveCursorRight(View view){
-        image.startAnimation(animRight);
+        AnimationHandler anim = new AnimationHandler(Direction.RIGHT, this, image);
+        anim.play();
     }
-
     public void select(){
         //TODO Context dependent selection; affirmation, etc.
     }
 
 
-    /*=================HELPER METHODS=================*/
-
-    //conversion of px to dp.
-    public float convertToDp(int px){
-        Resources r = getResources();
-        DisplayMetrics metrics = r.getDisplayMetrics();
-        float dp = px/(metrics.densityDpi/160f);
-        return dp;
-    }
-    //vice versa
-    public float convertToPx(int dp){
-        Resources r = getResources();
-        DisplayMetrics metrics = r.getDisplayMetrics();
-        float px = dp * (metrics.densityDpi / 160f);
-        return px;
-    }
-
-
-    /*=====================CLASSES=====================*/
-
-    //Updates the position of the UI element the animation is performed on.
-    private class Updater implements Animation.AnimationListener{
-        float x = 0;
-        float y = 0;
-        int direction;
-
-        Updater (int d){
-            direction = d;
-        }
-
-        //Set new layout parameters by looking at the direction and modifying them accordingly
-        @Override
-        public void onAnimationEnd(Animation animation){
-            //1 = up, 2 = down, 3 = left, 4 = right
-            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) image.getLayoutParams();
-            int posX = 0;
-            int posY = 0;
-            switch (direction){
-                case 1:
-                    posX = Math.round(x+convertToPx(13));
-                    posY = Math.round(y+convertToPx(-12));
-                    break;
-                case 2:
-                    posX = Math.round(x+convertToPx(-13));
-                    posY = Math.round(y+convertToPx(12));
-                    break;
-                case 3:
-                    posX = Math.round(x+convertToPx(-22));
-                    posY = Math.round(y+convertToPx(-7));
-                    break;
-                case 4:
-                    posX = Math.round(x+convertToPx(22));
-                    posY = Math.round(y+convertToPx(7));
-                    break;
-            }
-
-            if (posX != 0 && posY != 0){
-                lp.leftMargin = posX;
-                lp.topMargin = posY;
-                image.setLayoutParams(lp);
-            }else{} //TODO displaying error messages
-
-
-        }
-
-        @Override
-        public void onAnimationStart(Animation animation) {
-            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) image.getLayoutParams();
-            x = lp.leftMargin;
-            y = lp.topMargin;
-        }
-
-        @Override
-        public void onAnimationRepeat(Animation animation) {
-        }
-    }
 
     /*class GameView extends SurfaceView implements Runnable {
 

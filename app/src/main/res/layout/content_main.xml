@@ -4,16 +4,168 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.angelofmercy.mediumrareevil.MainActivity"
+    tools:context="com.arbitraryname.summer_project.MainActivity"
     tools:showIn="@layout/activity_main">
+
+    <Button
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:text="@string/ok"
+        android:textSize="8sp"
+        android:id="@+id/selectBtn"
+        android:onClick="select"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="60dp"
+        android:layout_marginBottom="40dp" />
+
+    <Button
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:text="@string/left"
+        android:textSize="5sp"
+        android:id="@+id/leftBtn"
+        android:onClick="moveCursorLeft"
+        android:layout_alignBottom="@+id/selectBtn"
+        android:layout_toLeftOf="@+id/selectBtn"
+        android:layout_toStartOf="@+id/downBtn"
+        android:layout_alignTop="@+id/selectBtn" />
+
+    <Button
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:text="@string/right"
+        android:textSize="5sp"
+        android:id="@+id/rightBtn"
+        android:onClick="moveCursorRight"
+        android:layout_toEndOf="@+id/selectBtn"
+        android:layout_alignBottom="@+id/selectBtn"
+        android:layout_alignTop="@+id/selectBtn"
+        android:layout_toRightOf="@+id/selectBtn" />
+
+    <Button
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:text="@string/down"
+        android:textSize="5sp"
+        android:id="@+id/downBtn"
+        android:onClick="moveCursorDown"
+        android:layout_alignLeft="@+id/selectBtn"
+        android:layout_alignStart="@+id/selectBtn"
+        android:layout_alignRight="@+id/selectBtn"
+        android:layout_below="@+id/selectBtn"
+        android:layout_marginTop="-45dp" />
+    <Button
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:text="@string/up"
+        android:textSize="5sp"
+        android:id="@+id/upBtn"
+        android:layout_alignWithParentIfMissing="false"
+        android:onClick="moveCursorUp"
+        android:layout_above="@+id/selectBtn"
+        android:layout_alignLeft="@+id/selectBtn"
+        android:layout_alignRight="@+id/selectBtn"
+        android:layout_marginBottom="-5dp" />
+
+    <ImageView
+        android:layout_width="390dp"
+        android:layout_height="400dp"
+        android:id="@+id/gameView"
+        android:src="@drawable/placeholder2"
+        android:layout_above="@+id/upBtn"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="115dp"
+        android:id="@+id/imageView2"
+        android:background="#5e5e5e"
+        android:layout_below="@+id/gameView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+    <ImageView
+        android:layout_width="35dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/cursorView"
+        android:src="@drawable/cursor_placeholder"
+        android:layout_alignLeft="@id/gameView"
+        android:layout_alignStart="@id/gameView"
+        android:layout_marginLeft="121dp"
+        android:layout_marginTop="137dp" />
+
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="match_parent"
+        android:id="@+id/imageView"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:background="#868686"
+        android:baselineAlignBottom="false" />
+
+    <ImageView
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:id="@+id/abstractView"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:background="#ffffff"
+        android:baselineAlignBottom="false"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp" />
+
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/health"
+        android:id="@+id/textView"
+        android:layout_marginLeft="17dp"
+        android:layout_marginStart="17dp"
+        android:textColor="#ffffff"
+        android:layout_below="@+id/rightBtn"
+        android:layout_alignLeft="@+id/abstractView"
+        android:layout_alignStart="@+id/abstractView" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/damage"
+        android:id="@+id/textView2"
+        android:textColor="#ffffff"
+        android:layout_marginLeft="55dp"
+        android:layout_marginStart="55dp"
+        android:layout_alignTop="@+id/textView"
+        android:layout_toRightOf="@+id/textView"
+        android:layout_toEndOf="@+id/textView" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/movement"
+        android:id="@+id/textView3"
+        android:textColor="#ffffff"
+        android:layout_alignTop="@+id/textView2"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="11dp"
+        android:layout_marginEnd="11dp" />
+
+    <Button
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:text="Quit"
+        android:id="@+id/QuitButton"
+        android:textSize="10dp"
+        android:layout_alignTop="@+id/abstractView"
+        android:layout_toStartOf="@+id/upBtn"
+        android:layout_toLeftOf="@+id/upBtn"/>
+
+
 </RelativeLayout>
