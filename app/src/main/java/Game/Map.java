@@ -71,7 +71,13 @@ public class Map{
 
         if(targetTile != null && targetTile.containsPiece()){
             p.setLocation(new Point(targetTile.getX(), targetTile.getY()));
-            return true;
+
+            Tile homeTile = getTileAt(loc);
+            if(homeTile.containsPiece(p)){
+                homeTile.removePiece();
+                return targetTile.setPiece(p);
+            }
+            return false;
         }
         else{
             return false;
@@ -118,6 +124,10 @@ public class Map{
                 return t;
         }
         return null;
+    }
+
+    public Tile getTileAt(Point loc){
+        return getTileAt(loc.getX(), loc.getY());
     }
 
     public int getWidth(){
