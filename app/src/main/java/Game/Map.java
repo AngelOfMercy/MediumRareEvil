@@ -114,6 +114,8 @@ public class Map{
 
     }
 
+
+
     //-------------------------------------------------------------
     //Getters and Setters
     //-------------------------------------------------------------
@@ -124,6 +126,22 @@ public class Map{
                 return t;
         }
         return null;
+    }
+
+    public ArrayList<Tile> getAdjacentTiles(Tile p){
+
+        ArrayList<Tile> adjTiles = new ArrayList<>();
+
+        for(Tile t : map){
+            if(getDistanceTo(p, t) == 1)
+                adjTiles.add(t);
+        }
+
+        return adjTiles;
+    }
+
+    public int getDistanceTo(Tile src, Tile target){
+        return Math.abs(src.getX() - target.getX()) + Math.abs(src.getY() - target.getY());
     }
 
     public Tile getTileAt(Point loc){

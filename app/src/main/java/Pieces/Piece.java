@@ -1,6 +1,8 @@
 package Pieces;
 
+import Game.Game.*;
 import Game.Utility.Point;
+import Game.Map;
 /**
  * Created by AngelOfMercy on 14/01/2016.
  */
@@ -31,6 +33,7 @@ public abstract class Piece {
 
     protected int CURRENT_HP = MAX_HP;
     private Point CURRENT_LOCATION = null;
+    private Direction UNIT_FACING = Direction.UP;
 
     /**
      * Unit Identifiers
@@ -74,10 +77,7 @@ public abstract class Piece {
      * @param target
      * @return returns true, if the unit is killed.
      */
-    public boolean attackTarget(Piece target){
-        if(target.getOwnerID() == this.OWNER_ID)
-            return false;
-
+    public boolean attackTarget(Piece target, Map m){
         return target.dealDamage(this.ATTACK_DAMAGE);
     }
 

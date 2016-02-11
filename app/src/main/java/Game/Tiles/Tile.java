@@ -3,6 +3,7 @@ package Game.Tiles;
 
 import Pieces.Piece;
 import Game.Map;
+import Game.Utility.Point;
 
 /**
  * Created by AngelOfMercy on 28/01/2016.
@@ -17,16 +18,20 @@ public abstract class Tile implements Comparable<Tile> {
         this.y = y;
     }
 
-    public int getX(){
-        return x;
-    }
+    public int getX(){ return x; }
 
     public int getY(){
         return y;
     }
 
+    public Point getLocation(){ return new Point(x, y); }
+
     public Piece getPiece(){
         return p;
+    }
+
+    public boolean hasPiece(){
+        return p != null;
     }
 
     public boolean setPiece(Piece p){
