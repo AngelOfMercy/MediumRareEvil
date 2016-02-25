@@ -71,7 +71,13 @@ public class Map{
 
         if(targetTile != null && targetTile.containsPiece()){
             p.setLocation(new Point(targetTile.getX(), targetTile.getY()));
-            return true;
+
+            Tile homeTile = getTileAt(loc);
+            if(homeTile.containsPiece(p)){
+                homeTile.removePiece();
+                return targetTile.setPiece(p);
+            }
+            return false;
         }
         else{
             return false;
@@ -108,6 +114,8 @@ public class Map{
 
     }
 
+
+
     //-------------------------------------------------------------
     //Getters and Setters
     //-------------------------------------------------------------
@@ -118,6 +126,26 @@ public class Map{
                 return t;
         }
         return null;
+    }
+
+    public ArrayList<Tile> getAdjacentTiles(Tile p){
+
+        ArrayList<Tile> adjTiles = new ArrayList<>();
+
+        for(Tile t : map){
+            if(getDistanceTo(p, t) == 1)
+                adjTiles.add(t);
+        }
+
+        return adjTiles;
+    }
+
+    public int getDistanceTo(Tile src, Tile target){
+        return Math.abs(src.getX() - target.getX()) + Math.abs(src.getY() - target.getY());
+    }
+
+    public Tile getTileAt(Point loc){
+        return getTileAt(loc.getX(), loc.getY());
     }
 
     public int getWidth(){
