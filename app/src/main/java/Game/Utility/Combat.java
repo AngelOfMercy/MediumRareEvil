@@ -15,7 +15,7 @@ public class Combat{
         this.map = m;
     }
 
-    public void attackUnit(Tile src, Game.Tiles.Tile target){
+   /* public void attackUnit(Tile src, Game.Tiles.Tile target){
 
         //TODO: Check that there is a src piece on the tile, and a target.
 
@@ -28,8 +28,8 @@ public class Combat{
             throw new IllegalArgumentException("Target not in range!");
 
         //Calls the method for the piece to perform the attack.
-        src.getPiece().attackTarget(target.getPiece(), map);
-    }
+       src.getPiece().attackTarget(target.getPiece(), map);
+    }*/
 
     public boolean withinRange(Tile src, Tile target){
         int min = src.getPiece().getAttackRangeMin();

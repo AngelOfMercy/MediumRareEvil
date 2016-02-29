@@ -20,12 +20,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        super.onCreate(savedInstanceState);
         setContentView(new MainGamePanel(this));
 
         //init cursor image
-        // image = (ImageView) findViewById(R.id.cursorView);
+        //image = (ImageView) findViewById(R.id.cursorView);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 }
-    /*
+/*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -83,7 +83,8 @@ public class MainActivity extends AppCompatActivity {
         anim.play();
     }
     public void select(View view){
-    }*/
+    }
+}*/
 
 
 

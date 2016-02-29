@@ -14,26 +14,25 @@ public class MainThread extends Thread {
     private MainGamePanel gamePanel;
 
     private boolean running;
+    public void setRunning (boolean running){
+        this.running = running;
+    }
+
     public MainThread (SurfaceHolder holder, MainGamePanel gamePanel){
         super();
         this.holder = holder;
         this.gamePanel = gamePanel;
     }
 
-    public void setRunning (boolean running){
-        this.running = running;
-        long tickCount = 0L;
-        while(running) {
-            tickCount++;
-        }
-        Log.d(TAG, "Game loop executed" + tickCount + "times");
-    }
-
     @Override
     public void run(){
+        long tickCount = 0L;
+        Log.d(TAG, "Beginning Loop");
         while (running){
-
+            tickCount++;
+            //TODO: update and render game state
         }
+        Log.d(TAG, "Game loop executed" + tickCount + "times");
     }
 
 }

@@ -33,6 +33,7 @@ public class MainGamePanel extends SurfaceView implements SurfaceHolder.Callback
 
     @Override
     public void surfaceCreated (SurfaceHolder holder){
+        Log.d(TAG, "Creating thread...");
         thread.setRunning(true);
         thread.start();
     }
