@@ -1,5 +1,8 @@
 package Pieces;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+
 import Game.Game.*;
 import Game.Utility.Point;
 import Game.Map;
@@ -7,7 +10,6 @@ import Game.Map;
  * Created by AngelOfMercy on 14/01/2016.
  */
 public abstract class Piece {
-
 
     //----------------------------------------------------------------------------------------------
     //Constants and Variables.
@@ -30,15 +32,15 @@ public abstract class Piece {
      * Unit Status
      * Current Condition of the unit
      */
-
     protected int CURRENT_HP = MAX_HP;
     private Point CURRENT_LOCATION = null;
     private Direction UNIT_FACING = Direction.UP;
-
+    private boolean isTouched;
     /**
      * Unit Identifiers
      * Theses are the ways for the unit to be uniquely identified
      */
+    private Bitmap bitmap;
     private String name;
     private int UNIT_ID;
     private int OWNER_ID;
@@ -46,8 +48,9 @@ public abstract class Piece {
     //----------------------------------------------------------------------------------------------
     //Constructors
     //----------------------------------------------------------------------------------------------
-    public Piece(String name, int OWNER_ID){
+    public Piece(String name, int OWNER_ID, Bitmap bitmap){
         this.name = name;
+        this.bitmap = bitmap;
         this.UNIT_ID = ID_COUNTER++;
         this.OWNER_ID = OWNER_ID;
     }
@@ -156,6 +159,16 @@ public abstract class Piece {
         return OWNER_ID;
     }
 
+    /**
+     * Returns the bitmap representing the piece
+     * @return
+     */
+    public Bitmap getBitmap() { return bitmap; }
+
+    public boolean getTouched(){ return isTouched; }
+
+    public void setTouched(boolean touched){ isTouched = touched; }
+
     public Point getLocation(){
         return CURRENT_LOCATION;
     }
@@ -165,4 +178,20 @@ public abstract class Piece {
         return true;
     }
 
+    public void draw(Canvas canvas){
+        canvas.drawBitmap(bitmap, CURRENT_LOCATION.x - (bitmap.getWidth() / 2),
+                CURRENT_LOCATION.y - (bitmap.getHeight() / 2), null);
+    }
+
+    public void handleAction (int eventX, int eventY){
+        if (eventX >= (CURRENT_LOCATION.x - bitmap.getWidth() / 2) && (eventX <= (CURRENT_LOCATION.x + bitmap.getWidth()/2))) {
+            if (eventY >= (CURRENT_LOCATION.y - bitmap.getHeight() / 2) && (eventY <= (CURRENT_LOCATION.y + bitmap.getHeight() / 2))) {
+                setTouched(true);
+            } else {
+                setTouched(false);
+            }
+        } else {
+            setTouched(false);
+        }
+    }
 }

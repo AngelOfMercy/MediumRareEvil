@@ -1,5 +1,7 @@
 package com.example.angelofmercy.mediumrareevil;
 
+import android.annotation.SuppressLint;
+import android.graphics.Canvas;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
@@ -26,13 +28,22 @@ public class MainThread extends Thread {
 
     @Override
     public void run(){
-        long tickCount = 0L;
+        Canvas canvas;
         Log.d(TAG, "Beginning Loop");
+
         while (running){
-            tickCount++;
-            //TODO: update and render game state
+            canvas = null;
+            try{
+                canvas = this.holder.lockCanvas();
+                synchronized (holder){
+                    this.gamePanel.onDraw(canvas);
+                }
+            }finally {
+                if (canvas != null){
+                    holder.unlockCanvasAndPost(canvas);
+                }
+            }
         }
-        Log.d(TAG, "Game loop executed" + tickCount + "times");
     }
 
 }

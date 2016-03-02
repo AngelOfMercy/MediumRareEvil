@@ -1,5 +1,7 @@
 package Pieces;
 
+import android.graphics.Bitmap;
+
 import java.util.ArrayList;
 
 import Game.Map;
@@ -10,8 +12,8 @@ import Game.Tiles.Tile;
  */
 public class WizardPiece extends Piece{
 
-    public WizardPiece(int OWNER_ID){
-        super("Wizard", OWNER_ID);
+    public WizardPiece(int OWNER_ID, Bitmap bitmap){
+        super("Wizard", OWNER_ID, bitmap);
         super.ATTACK_RANGE_MIN = 3;
         super.ATTACK_RANGE_MAX = 3;
         super.setDefaultHP(2);
