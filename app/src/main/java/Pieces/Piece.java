@@ -2,6 +2,7 @@ package Pieces;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.util.Log;
 
 import Game.Game.*;
 import Game.Utility.Point;
@@ -18,6 +19,7 @@ public abstract class Piece {
      * Utility
      */
     private static int ID_COUNTER = 0;
+    String TAG = Piece.class.getSimpleName();
 
     /**
      * Unit Statistics
@@ -53,6 +55,7 @@ public abstract class Piece {
         this.bitmap = bitmap;
         this.UNIT_ID = ID_COUNTER++;
         this.OWNER_ID = OWNER_ID;
+        CURRENT_LOCATION = new Point(10, 10);
     }
 
     //----------------------------------------------------------------------------------------------
@@ -184,8 +187,8 @@ public abstract class Piece {
     }
 
     public void handleAction (int eventX, int eventY){
-        if (eventX >= (CURRENT_LOCATION.x - bitmap.getWidth() / 2) && (eventX <= (CURRENT_LOCATION.x + bitmap.getWidth()/2))) {
-            if (eventY >= (CURRENT_LOCATION.y - bitmap.getHeight() / 2) && (eventY <= (CURRENT_LOCATION.y + bitmap.getHeight() / 2))) {
+        if (eventX >= (CURRENT_LOCATION.x) && (eventX <= (CURRENT_LOCATION.x + bitmap.getWidth()))) {
+            if (eventY >= (CURRENT_LOCATION.y) && (eventY <= (CURRENT_LOCATION.y + bitmap.getHeight()))) {
                 setTouched(true);
             } else {
                 setTouched(false);

@@ -5,10 +5,11 @@ package Game.Utility;
  */
 public class Point {
 
-    public int x = 0, y = 0;
+    public int x, y;
 
     public Point (int x, int y){
-
+        this.x = x;
+        this.y = y;
     }
     public int getX(){
         return x;

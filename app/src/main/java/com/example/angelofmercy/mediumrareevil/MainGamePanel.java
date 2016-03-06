@@ -7,6 +7,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.PixelFormat;
+import android.graphics.PorterDuff;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.Surface;
@@ -31,7 +34,10 @@ public class MainGamePanel extends SurfaceView implements SurfaceHolder.Callback
 
         soldier = new SoldierPiece(1, BitmapFactory.decodeResource(getResources(), R.drawable.soldier_blue));
 
-        thread = new MainThread(getHolder(),this);
+        this.setZOrderOnTop(true);
+        SurfaceHolder holder = getHolder();
+        holder.setFormat(PixelFormat.TRANSPARENT);
+        thread = new MainThread(holder,this);
 
         setFocusable(true);
     }
@@ -71,12 +77,14 @@ public class MainGamePanel extends SurfaceView implements SurfaceHolder.Callback
             else {
                 Log.d(TAG, "Coords: x= " + event.getX() + ", y= " + event.getY());
             }
+            return true;
         }
         if (event.getAction() == MotionEvent.ACTION_MOVE) {
             if(soldier.getTouched() == true){
                 Point p = new Point((int)event.getX(), (int)event.getY());
                 soldier.setLocation(p);
             }
+            return true;
         }
         if (event.getAction() == MotionEvent.ACTION_UP) {
             soldier.setTouched(false);
@@ -86,6 +94,8 @@ public class MainGamePanel extends SurfaceView implements SurfaceHolder.Callback
 
     @Override
     protected void onDraw (Canvas canvas){
-        canvas.drawBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.soldier_blue), 10, 10, null);
+        canvas.drawColor(0, PorterDuff.Mode.CLEAR);
+        canvas.drawBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.soldier_blue),
+                soldier.getLocation().getX(), soldier.getLocation().getY(), null);
     }
 }
