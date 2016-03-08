@@ -10,6 +10,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.Surface;
@@ -24,28 +25,33 @@ public class MainGamePanel extends SurfaceView implements SurfaceHolder.Callback
 
     private static final String TAG = MainGamePanel.class.getSimpleName();
 
-    private MainThread thread;
+    private MainThread thread;  //thread used to draw on the canvas
 
     private Piece soldier;
 
+    /**
+     * Implementing the SurfaceView window in XML requires these constructors
+     */
     public MainGamePanel (Context context){
         super(context);
-        getHolder().addCallback(this);
-
-        soldier = new SoldierPiece(1, BitmapFactory.decodeResource(getResources(), R.drawable.soldier_blue));
-
-        this.setZOrderOnTop(true);
-        SurfaceHolder holder = getHolder();
-        holder.setFormat(PixelFormat.TRANSPARENT);
-        thread = new MainThread(holder,this);
-
-        setFocusable(true);
+        init();
+    }
+    public MainGamePanel (Context context, AttributeSet attrs){
+        super(context, attrs);
+        init();
+    }
+    public MainGamePanel (Context context, AttributeSet attrs, int defStyle){
+        super(context, attrs, defStyle);
+        init();
     }
 
     @Override
     public void surfaceChanged (SurfaceHolder holder, int format, int width, int height){
     }
 
+    /**
+     * Set the thread running only when the SurfaceView has been created
+     */
     @Override
     public void surfaceCreated (SurfaceHolder holder){
         Log.d(TAG, "Creating thread...");
@@ -66,36 +72,31 @@ public class MainGamePanel extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
-    @Override
-    public boolean onTouchEvent (MotionEvent event){
-        if (event.getAction() == MotionEvent.ACTION_DOWN){
-            soldier.handleAction((int)event.getX(), (int)event.getY());
-            if (event.getY() > getHeight() - 50){
-                thread.setRunning(false);
-                ((Activity)getContext()).finish();
-            }
-            else {
-                Log.d(TAG, "Coords: x= " + event.getX() + ", y= " + event.getY());
-            }
-            return true;
-        }
-        if (event.getAction() == MotionEvent.ACTION_MOVE) {
-            if(soldier.getTouched() == true){
-                Point p = new Point((int)event.getX(), (int)event.getY());
-                soldier.setLocation(p);
-            }
-            return true;
-        }
-        if (event.getAction() == MotionEvent.ACTION_UP) {
-            soldier.setTouched(false);
-        }
-        return super.onTouchEvent(event);
-    }
-
+    /**
+     * Drawing method to draw on the canvas in the SurfaceView.
+     */
     @Override
     protected void onDraw (Canvas canvas){
-        canvas.drawColor(0, PorterDuff.Mode.CLEAR);
-        canvas.drawBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.soldier_blue),
-                soldier.getLocation().getX(), soldier.getLocation().getY(), null);
+        //Canvas is when program is first loaded, so skip over at first.
+        if(canvas != null) {
+            //this call refreshes the canvas, ready to be updated for the next frame
+            canvas.drawColor(0, PorterDuff.Mode.CLEAR);
+            soldier.draw(canvas);
+        }
+    }
+
+    //Utility method for the constructors
+    private void init(){
+        getHolder().addCallback(this);
+
+        soldier = new SoldierPiece(1, BitmapFactory.decodeResource(getResources(), R.drawable.soldier_blue));
+
+        this.setZOrderOnTop(true);
+        SurfaceHolder holder = getHolder();
+        holder.setFormat(PixelFormat.TRANSPARENT);
+
+        thread = new MainThread(holder,this);
+
+        setFocusable(true);
     }
 }

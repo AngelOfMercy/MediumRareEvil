@@ -1,8 +1,10 @@
 package com.example.angelofmercy.mediumrareevil;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Surface;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.Menu;
@@ -14,9 +16,10 @@ import Game.Game.Direction;
 import Animation.AnimationHandler;
 
 public class MainActivity extends AppCompatActivity {
+
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    //ImageView image;
+    ImageView image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,10 +27,10 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
 
-        setContentView(new MainGamePanel(this));
+        setContentView(R.layout.activity_main);
 
         //init cursor image
-        //image = (ImageView) findViewById(R.id.cursorView);
+        image = (ImageView) findViewById(R.id.cursorView);
     }
 
     @Override
@@ -42,8 +45,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
 
     }
-}
-/*
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -66,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
     //These methods use AnimationHandler to animate the cursor
     public void moveCursorUp(View view) {
         AnimationHandler anim = new AnimationHandler(Direction.UP, this, image);
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public void select(View view){
     }
-}*/
+}
 
 
 

@@ -90,10 +90,12 @@
         android:layout_height="wrap_content"
         android:id="@+id/cursorView"
         android:src="@drawable/cursor_placeholder"
-        android:layout_alignLeft="@id/gameView"
-        android:layout_alignStart="@id/gameView"
-        android:layout_marginLeft="121dp"
-        android:layout_marginTop="137dp" />
+        android:layout_marginBottom="34dp"
+        android:layout_marginLeft="21dp"
+        android:layout_marginStart="21dp"
+        android:layout_alignBottom="@+id/abstractView"
+        android:layout_alignLeft="@+id/leftBtn"
+        android:layout_alignStart="@+id/leftBtn" />
 
     <ImageView
         android:layout_width="200dp"
@@ -166,6 +168,11 @@
         android:layout_alignTop="@+id/abstractView"
         android:layout_toStartOf="@+id/upBtn"
         android:layout_toLeftOf="@+id/upBtn"/>
+
+    <com.example.angelofmercy.mediumrareevil.MainGamePanel
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
 
 
 </RelativeLayout>

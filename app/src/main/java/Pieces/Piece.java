@@ -162,16 +162,6 @@ public abstract class Piece {
         return OWNER_ID;
     }
 
-    /**
-     * Returns the bitmap representing the piece
-     * @return
-     */
-    public Bitmap getBitmap() { return bitmap; }
-
-    public boolean getTouched(){ return isTouched; }
-
-    public void setTouched(boolean touched){ isTouched = touched; }
-
     public Point getLocation(){
         return CURRENT_LOCATION;
     }
@@ -182,19 +172,8 @@ public abstract class Piece {
     }
 
     public void draw(Canvas canvas){
-        canvas.drawBitmap(bitmap, CURRENT_LOCATION.x - (bitmap.getWidth() / 2),
-                CURRENT_LOCATION.y - (bitmap.getHeight() / 2), null);
+        canvas.drawBitmap(bitmap, CURRENT_LOCATION.x,
+                CURRENT_LOCATION.y, null);
     }
 
-    public void handleAction (int eventX, int eventY){
-        if (eventX >= (CURRENT_LOCATION.x) && (eventX <= (CURRENT_LOCATION.x + bitmap.getWidth()))) {
-            if (eventY >= (CURRENT_LOCATION.y) && (eventY <= (CURRENT_LOCATION.y + bitmap.getHeight()))) {
-                setTouched(true);
-            } else {
-                setTouched(false);
-            }
-        } else {
-            setTouched(false);
-        }
-    }
 }

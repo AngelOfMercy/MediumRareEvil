@@ -26,6 +26,9 @@ public class MainThread extends Thread {
         this.gamePanel = gamePanel;
     }
 
+    /**
+     * We override the run method to begin drawing on the canvas.
+     */
     @Override
     public void run(){
         Canvas canvas;

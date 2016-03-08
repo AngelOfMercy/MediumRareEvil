@@ -17,13 +17,15 @@ public class AnimationHandler {
     Animation anim;
     ImageView image;
 
-    //Constructor. Depending on the direction passed in,
-    //we load up a different animation, up down, left or right
-    //@param d: the direction constant
-    //@param context: We need the context for loading the animation and
-    //passing to the animation listener; XMLUpdater
-    //@param i: the image of the cursor, which we also need to
-    //pass to XMLUpdater, and save to call the animation on
+    /**
+     * Constructor. Depending on the direction passed in,
+     * we load up a different animation, up down, left or right
+     * @param d the direction constant.
+     * @param context We need the context for loading the animation and
+     * passing to the animation listener; XMLUpdater.
+     * @param i  the image of the cursor, which we also need to
+     * pass to XMLUpdater, and save to call the animation on
+     */
     public AnimationHandler(Direction d, Context context, ImageView i){
         image = i;
         switch (d){
