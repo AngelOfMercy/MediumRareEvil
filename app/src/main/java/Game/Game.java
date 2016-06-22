@@ -1,9 +1,12 @@
 package Game;
 
+import android.graphics.Canvas;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
+import Game.Utility.Point;
 import Pieces.Piece;
 
 /**

@@ -1,5 +1,8 @@
 package Game;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+
 import Game.Utility.Point;
 
 import java.util.HashSet;
@@ -20,6 +23,10 @@ public class Map{
 
     private int width, height;
 
+    private Bitmap bitmap;
+
+    private Point origin;
+
 
     //-------------------------------------------------------------
     //Constructors
@@ -30,12 +37,13 @@ public class Map{
      * @param width The width of a the map.
      * @param height The height of the map.
      */
-    public Map(int width, int height){
+    public Map(int width, int height, Bitmap bitmap, Point origin){
 
         //Store the maps width and height.
         this.width = width;
         this.height = height;
-
+        this.bitmap = bitmap;
+        this.origin = origin;
 
         //Create an empty list of tiles.
         this.map = new HashSet<Tile>();
@@ -67,26 +75,44 @@ public class Map{
     public boolean movePiece(Piece p, Game.Direction d){
         Point loc = p.getLocation();//Get 'p's X and Y Location
 
+        switch (d){
+            case UP:
+                loc.y-=1;
+                p.setLocation(loc, origin);
+                break;
+            case DOWN:
+                loc.y+=1;
+                p.setLocation(loc, origin);
+                break;
+            case LEFT:
+                loc.x-=1;
+                p.setLocation(loc, origin);
+                break;
+            case RIGHT:
+                loc.x+=1;
+                p.setLocation(loc, origin);
+                break;
+        }
         Tile targetTile = getAdjacentTile(loc, d);
 
-        if(targetTile != null && targetTile.containsPiece()){
-            p.setLocation(new Point(targetTile.getX(), targetTile.getY()));
-
-            Tile homeTile = getTileAt(loc);
-            if(homeTile.containsPiece(p)){
-                homeTile.removePiece();
-                return targetTile.setPiece(p);
-            }
-            return false;
-        }
-        else{
-            return false;
-        }
-
+//        if(targetTile != null && targetTile.containsPiece()){
+//            p.setLocation(new Point(targetTile.getX(), targetTile.getY()));
+//
+//            Tile homeTile = getTileAt(loc);
+//            if(homeTile.containsPiece(p)){
+//                homeTile.removePiece();
+//                return targetTile.setPiece(p);
+//            }
+//            return false;
+//        }
+//        else{
+//            return false;
+//        }
+        return true;
     }
 
     private Tile getAdjacentTile(Point loc, Game.Direction d){
-        int x = loc.x, y = loc.y;
+        float x = loc.x, y = loc.y;
 
         switch(d){
             case UP:
@@ -120,7 +146,7 @@ public class Map{
     //Getters and Setters
     //-------------------------------------------------------------
 
-    public Tile getTileAt(int x, int y){
+    public Tile getTileAt(float x, float y){
         for(Tile t : map){
             if(t.getX() == x && t.getY() == y)
                 return t;
@@ -149,14 +175,18 @@ public class Map{
     }
 
     public int getWidth(){
-        return width;
+        return bitmap.getWidth();
     }
 
     public int getHeight(){
-        return height;
+        return bitmap.getHeight();
     }
 
     public ArrayList<Piece> getPieces(){
         return pieces;
+    }
+
+    public void draw (Canvas canvas){
+        canvas.drawBitmap(bitmap, (canvas.getWidth()/2) - (bitmap.getWidth()/2), 40, null);
     }
 }

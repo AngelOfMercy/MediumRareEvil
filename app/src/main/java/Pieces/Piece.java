@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.util.Log;
 
+import Game.Game;
 import Game.Game.*;
 import Game.Utility.Point;
 import Game.Map;
@@ -35,7 +36,8 @@ public abstract class Piece {
      * Current Condition of the unit
      */
     protected int CURRENT_HP = MAX_HP;
-    private Point CURRENT_LOCATION = null;
+    private Point CURRENT_LOCATION = new Point(0,0);
+    private Point SCREEN_LOCATION;
     private Direction UNIT_FACING = Direction.UP;
     private boolean isTouched;
     /**
@@ -50,12 +52,12 @@ public abstract class Piece {
     //----------------------------------------------------------------------------------------------
     //Constructors
     //----------------------------------------------------------------------------------------------
-    public Piece(String name, int OWNER_ID, Bitmap bitmap){
+    public Piece(String name, int OWNER_ID, Bitmap bitmap, Point origin){
         this.name = name;
         this.bitmap = bitmap;
         this.UNIT_ID = ID_COUNTER++;
         this.OWNER_ID = OWNER_ID;
-        CURRENT_LOCATION = new Point(10, 10);
+        this.SCREEN_LOCATION = origin;
     }
 
     //----------------------------------------------------------------------------------------------
@@ -166,14 +168,28 @@ public abstract class Piece {
         return CURRENT_LOCATION;
     }
 
-    public boolean setLocation(Point p){
+    public boolean setLocation(Point p, Point origin){
         CURRENT_LOCATION = p;
+        SCREEN_LOCATION = setScreenLocation(origin);
         return true;
     }
 
+    /**calculate pixel position based on origin and piece coordinates*/
+    private Point setScreenLocation(Point origin){
+        /*algorithm: measure along one axis the distance in pixels, then add modifier for
+        distance along the opposite axis due to the diagonal nature of the game view.
+        Do the same for the other axis.*/
+        Float x = origin.getX()+(CURRENT_LOCATION.getX()*-105)+(CURRENT_LOCATION.getY()*-63);
+        Float y = origin.getY()+(CURRENT_LOCATION.getY()*59)+(CURRENT_LOCATION.getX()*-33);
+        Point xy = new Point(x, y);
+
+        return xy;
+    }
+
+
     public void draw(Canvas canvas){
-        canvas.drawBitmap(bitmap, CURRENT_LOCATION.x,
-                CURRENT_LOCATION.y, null);
+        canvas.drawBitmap(bitmap, SCREEN_LOCATION.x,
+                SCREEN_LOCATION.y, null);
     }
 
 }

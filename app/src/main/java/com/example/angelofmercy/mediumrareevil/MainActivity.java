@@ -1,25 +1,23 @@
 package com.example.angelofmercy.mediumrareevil;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Surface;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageView;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import Game.Game.Direction;
-import Animation.AnimationHandler;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-
-    ImageView image;
+    private static View gamePanel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,9 +26,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-
-        //init cursor image
-        image = (ImageView) findViewById(R.id.cursorView);
+        gamePanel = findViewById(R.id.mainPanel);
     }
 
     @Override
@@ -68,24 +64,74 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    //These methods use AnimationHandler to animate the cursor
     public void moveCursorUp(View view) {
-        AnimationHandler anim = new AnimationHandler(Direction.UP, this, image);
-        anim.play();
+        try {
+            Method m = gamePanel.getClass().getDeclaredMethod("move", Direction.class);
+            m.invoke(gamePanel, Direction.UP);
+        }
+        catch (NoSuchMethodException e) {
+            Log.d(TAG, "Method not found, " + e);
+        }
+         catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
     public void moveCursorDown(View view){
-        AnimationHandler anim = new AnimationHandler(Direction.DOWN, this, image);
-        anim.play();
+        try {
+            Method m = gamePanel.getClass().getDeclaredMethod("move", Direction.class);
+            m.invoke(gamePanel, Direction.DOWN);
+        }
+        catch (NoSuchMethodException e) {
+            Log.d(TAG, "Method not found, " + e);
+        }
+        catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
     public void moveCursorLeft(View view){
-        AnimationHandler anim = new AnimationHandler(Direction.LEFT, this, image);
-        anim.play();
+        try {
+            Method m = gamePanel.getClass().getDeclaredMethod("move", Direction.class);
+            m.invoke(gamePanel, Direction.LEFT);
+        }
+        catch (NoSuchMethodException e) {
+            Log.d(TAG, "Method not found, " + e);
+        }
+        catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
     public void moveCursorRight(View view){
-        AnimationHandler anim = new AnimationHandler(Direction.RIGHT, this, image);
-        anim.play();
+        try {
+            Method m = gamePanel.getClass().getDeclaredMethod("move", Direction.class);
+            m.invoke(gamePanel, Direction.RIGHT);
+        }
+        catch (NoSuchMethodException e) {
+            Log.d(TAG, "Method not found, " + e);
+        }
+        catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
     public void select(View view){
+        try {
+            Method m = gamePanel.getClass().getMethod("test");
+            m.invoke(gamePanel);
+        }
+        catch (NoSuchMethodException e) {
+            Log.d(TAG, "Method not found, " + e);
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 }
 

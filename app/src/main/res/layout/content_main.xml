@@ -9,115 +9,72 @@
     tools:showIn="@layout/activity_main">
 
     <Button
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:text="@string/ok"
-        android:textSize="8sp"
+        android:textSize="15sp"
         android:id="@+id/selectBtn"
         android:onClick="select"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="60dp"
-        android:layout_marginBottom="40dp" />
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="5dp" />
 
     <Button
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:text="@string/left"
-        android:textSize="5sp"
+        android:textSize="15sp"
         android:id="@+id/leftBtn"
         android:onClick="moveCursorLeft"
         android:layout_alignBottom="@+id/selectBtn"
-        android:layout_toLeftOf="@+id/selectBtn"
-        android:layout_toStartOf="@+id/downBtn"
-        android:layout_alignTop="@+id/selectBtn" />
+        android:layout_alignTop="@+id/selectBtn"
+        android:layout_toRightOf="@+id/upBtn" />
 
     <Button
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:text="@string/right"
-        android:textSize="5sp"
+        android:textSize="15sp"
         android:id="@+id/rightBtn"
         android:onClick="moveCursorRight"
-        android:layout_toEndOf="@+id/selectBtn"
         android:layout_alignBottom="@+id/selectBtn"
         android:layout_alignTop="@+id/selectBtn"
-        android:layout_toRightOf="@+id/selectBtn" />
+        android:layout_toRightOf="@+id/leftBtn" />
 
     <Button
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:text="@string/down"
-        android:textSize="5sp"
+        android:textSize="15sp"
         android:id="@+id/downBtn"
         android:onClick="moveCursorDown"
-        android:layout_alignLeft="@+id/selectBtn"
-        android:layout_alignStart="@+id/selectBtn"
-        android:layout_alignRight="@+id/selectBtn"
-        android:layout_below="@+id/selectBtn"
-        android:layout_marginTop="-45dp" />
+        android:layout_alignTop="@+id/selectBtn"
+        android:layout_toRightOf="@+id/selectBtn"
+        android:layout_alignBottom="@+id/selectBtn" />
     <Button
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:text="@string/up"
-        android:textSize="5sp"
+        android:textSize="15sp"
         android:id="@+id/upBtn"
         android:layout_alignWithParentIfMissing="false"
         android:onClick="moveCursorUp"
-        android:layout_above="@+id/selectBtn"
-        android:layout_alignLeft="@+id/selectBtn"
-        android:layout_alignRight="@+id/selectBtn"
-        android:layout_marginBottom="-5dp" />
+        android:layout_alignTop="@+id/selectBtn"
+        android:layout_alignBottom="@+id/selectBtn"
+        android:layout_toRightOf="@+id/downBtn" />
 
-    <ImageView
-        android:layout_width="390dp"
-        android:layout_height="400dp"
-        android:id="@+id/gameView"
-        android:src="@drawable/placeholder2"
-        android:layout_above="@+id/upBtn"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="115dp"
         android:id="@+id/imageView2"
         android:background="#5e5e5e"
-        android:layout_below="@+id/gameView"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-    <ImageView
-        android:layout_width="35dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/cursorView"
-        android:src="@drawable/cursor_placeholder"
-        android:layout_marginBottom="34dp"
-        android:layout_marginLeft="21dp"
-        android:layout_marginStart="21dp"
-        android:layout_alignBottom="@+id/abstractView"
-        android:layout_alignLeft="@+id/leftBtn"
-        android:layout_alignStart="@+id/leftBtn" />
-
-    <ImageView
-        android:layout_width="200dp"
-        android:layout_height="match_parent"
-        android:id="@+id/imageView"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:background="#868686"
-        android:baselineAlignBottom="false" />
-
-    <ImageView
-        android:layout_width="180dp"
-        android:layout_height="180dp"
-        android:id="@+id/abstractView"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:background="#ffffff"
-        android:baselineAlignBottom="false"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp" />
+        android:layout_alignTop="@+id/selectBtn" />
 
 
     <TextView
@@ -126,12 +83,12 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/health"
         android:id="@+id/textView"
-        android:layout_marginLeft="17dp"
-        android:layout_marginStart="17dp"
         android:textColor="#ffffff"
-        android:layout_below="@+id/rightBtn"
-        android:layout_alignLeft="@+id/abstractView"
-        android:layout_alignStart="@+id/abstractView" />
+        android:layout_alignBottom="@+id/rightBtn"
+        android:layout_toRightOf="@+id/rightBtn"
+        android:layout_toEndOf="@+id/rightBtn"
+        android:layout_marginLeft="100dp"
+        android:layout_marginStart="100dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -153,26 +110,26 @@
         android:text="@string/movement"
         android:id="@+id/textView3"
         android:textColor="#ffffff"
-        android:layout_alignTop="@+id/textView2"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginRight="11dp"
-        android:layout_marginEnd="11dp" />
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_alignTop="@+id/textView"
+        android:layout_toRightOf="@+id/textView"
+        android:layout_toEndOf="@+id/textView" />
 
     <Button
         android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:text="Quit"
         android:id="@+id/QuitButton"
-        android:textSize="10dp"
-        android:layout_alignTop="@+id/abstractView"
-        android:layout_toStartOf="@+id/upBtn"
-        android:layout_toLeftOf="@+id/upBtn"/>
+        android:textSize="10dp" />
 
-    <com.example.angelofmercy.mediumrareevil.MainGamePanel
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+   <com.example.angelofmercy.mediumrareevil.MainGamePanel
+       android:id="@+id/mainPanel"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:layout_alignParentRight="true"
+       android:layout_alignParentEnd="true"
+       android:layout_above="@+id/selectBtn" />
 
 
 </RelativeLayout>
