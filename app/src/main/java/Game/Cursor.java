@@ -19,10 +19,14 @@ public class Cursor {
 
     public Cursor (Point origin, Bitmap bitmap){
         CURRENT_LOCATION = new Point(0,0);
+        origin.y += 37;
         SCREEN_LOCATION = origin;
         this.bitmap = bitmap;
     }
 
+    public Point getLocation(){
+        return CURRENT_LOCATION;
+    }
     /*Directional movement method adds and subtracts from class fields.*/
     public void setLocation(Point p, Point origin){
         CURRENT_LOCATION = p;

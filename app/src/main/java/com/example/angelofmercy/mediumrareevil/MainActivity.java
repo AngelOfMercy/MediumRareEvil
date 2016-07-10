@@ -2,10 +2,12 @@ package com.example.angelofmercy.mediumrareevil;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -18,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static View gamePanel;
+    private static Boolean fatFingerBar = true;
+    private int ffsHeight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
         gamePanel = findViewById(R.id.mainPanel);
+        ffsHeight = toPx(75);
     }
 
     @Override
@@ -120,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
     public void select(View view){
         try {
             Method m = gamePanel.getClass().getMethod("test");
@@ -132,6 +138,27 @@ public class MainActivity extends AppCompatActivity {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
+    }
+    public void toggleFFB(View view){
+        fatFingerBar = !fatFingerBar;
+        View ffb = findViewById(R.id.fatFingerBar);
+        ViewGroup.LayoutParams layoutParams = ffb.getLayoutParams();
+
+        if(fatFingerBar){
+            //TODO: CONVERT TO DP
+            layoutParams.height = ffsHeight;
+            ffb.setLayoutParams(layoutParams);
+        }
+        else{
+            layoutParams.height = 0;
+            ffb.setLayoutParams(layoutParams);
+        }
+
+    }
+
+    public int toPx(int dp){
+        float logicalDensity = getResources().getDisplayMetrics().density;
+        return (int) Math.ceil(dp * logicalDensity + 0.5f);
     }
 }
 

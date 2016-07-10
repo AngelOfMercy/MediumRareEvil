@@ -32,7 +32,7 @@ public class MainGamePanel extends SurfaceView implements SurfaceHolder.Callback
 
     private Piece soldier;
 
-    private Cursor cursor;
+    private static Cursor cursor;
 
     private Map map;
 
@@ -113,7 +113,7 @@ public class MainGamePanel extends SurfaceView implements SurfaceHolder.Callback
 
     public void move(Game.Direction d){
         System.out.print("Direction:" + d);
-        map.movePiece(soldier, d);
+        map.moveCursor(d);
     }
 
     //Utility method for the constructors, containing initializations for variables
@@ -124,7 +124,7 @@ public class MainGamePanel extends SurfaceView implements SurfaceHolder.Callback
 
         soldier = new SoldierPiece(1, BitmapFactory.decodeResource(getResources(), R.drawable.soldier_blue), origin);
 
-        map = new Map(0,0, BitmapFactory.decodeResource(getResources(), R.drawable.placeholder2), origin);
+        map = new Map(0,0, BitmapFactory.decodeResource(getResources(), R.drawable.placeholder2), origin, cursor);
         this.setZOrderOnTop(true);
         SurfaceHolder holder = getHolder();
         holder.setFormat(PixelFormat.TRANSPARENT);

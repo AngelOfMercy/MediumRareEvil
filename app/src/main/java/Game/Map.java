@@ -27,6 +27,8 @@ public class Map{
 
     private Point origin;
 
+    private static Cursor cursor;
+
 
     //-------------------------------------------------------------
     //Constructors
@@ -37,13 +39,14 @@ public class Map{
      * @param width The width of a the map.
      * @param height The height of the map.
      */
-    public Map(int width, int height, Bitmap bitmap, Point origin){
+    public Map(int width, int height, Bitmap bitmap, Point origin, Cursor cursor){
 
         //Store the maps width and height.
         this.width = width;
         this.height = height;
         this.bitmap = bitmap;
         this.origin = origin;
+        this.cursor = cursor;
 
         //Create an empty list of tiles.
         this.map = new HashSet<Tile>();
@@ -68,29 +71,28 @@ public class Map{
 
     /**
      * Moves the given piece one tile in the give direction.
-     * @param p
-     * @param d
+     * @param d Direction of movement.
      * @return If successful, returns true.
      */
-    public boolean movePiece(Piece p, Game.Direction d){
-        Point loc = p.getLocation();//Get 'p's X and Y Location
+    public boolean moveCursor(Game.Direction d){
+        Point loc = cursor.getLocation();//Get 'p's X and Y Location
 
         switch (d){
             case UP:
                 loc.y-=1;
-                p.setLocation(loc, origin);
+                cursor.setLocation(loc, origin);
                 break;
             case DOWN:
                 loc.y+=1;
-                p.setLocation(loc, origin);
+                cursor.setLocation(loc, origin);
                 break;
             case LEFT:
                 loc.x-=1;
-                p.setLocation(loc, origin);
+                cursor.setLocation(loc, origin);
                 break;
             case RIGHT:
                 loc.x+=1;
-                p.setLocation(loc, origin);
+                cursor.setLocation(loc, origin);
                 break;
         }
         Tile targetTile = getAdjacentTile(loc, d);
@@ -109,6 +111,25 @@ public class Map{
 //            return false;
 //        }
         return true;
+    }
+
+    public boolean movePiece(Piece p, Direction d){
+        Point loc = p.getLocation();
+        Tile targetTile = getAdjacentTile(loc, d);
+
+        if(targetTile != null && targetTile.containsPiece()){
+            p.setLocation(new Point(targetTile.getX(), targetTile.getY()), origin);
+
+            Tile homeTile = getTileAt(loc);
+            if(homeTile.containsPiece(p)){
+                homeTile.removePiece();
+                return targetTile.setPiece(p);
+            }
+            return false;
+        }
+        else{
+            return false;
+        }
     }
 
     private Tile getAdjacentTile(Point loc, Game.Direction d){
@@ -187,6 +208,7 @@ public class Map{
     }
 
     public void draw (Canvas canvas){
-        canvas.drawBitmap(bitmap, (canvas.getWidth()/2) - (bitmap.getWidth()/2), 40, null);
+        //TODO: CENTER DRAW
+        canvas.drawBitmap(bitmap, (canvas.getWidth()/2) - (bitmap.getWidth()/2), (canvas.getHeight()/2) - (bitmap.getHeight()/2), null);
     }
 }
