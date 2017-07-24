@@ -4,12 +4,10 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
 import Game.Utility.Point;
-
-import java.util.HashSet;
 import java.util.ArrayList;
 
 import Game.Tiles.*;
-import Pieces.Piece;
+import Pieces.*;
 import Game.Game.Direction;
 
 /**
@@ -17,85 +15,174 @@ import Game.Game.Direction;
  */
 public class Map{
 
-    private HashSet<Tile> map = null;
 
     private ArrayList<Piece> pieces = new ArrayList<Piece>();
 
-    private int width, height;
+    public Tile[][] tileSet;
 
-    private Bitmap bitmap;
+    /*Only used to setup the starting population for each player*/
+    //N = None
+    //W = Wizard
+    //S = Soldier
+    //T = Trebuchet
+    //P = Palisade
+    //R = Spearman
+    //H = Heavy
+    //A = Archer
+    //C = Cleric
+    //B = Standard Bearer
+    private String redStart[][] = {{"H", "A", "T", "W", "B", "T", "A", "H"},
+                                   {"C", "P", "R", "R", "R", "R", "P", "C"},
+                                   {"N", "N", "S", "S", "S", "S", "N", "N"},
+                                   {"N", "N", "N", "N", "N", "N", "N", "N"},
+                                   {"N", "N", "N", "N", "N", "N", "N", "N"},
+                                   {"N", "N", "N", "N", "N", "N", "N", "N"},
+                                   {"N", "N", "N", "N", "N", "N", "N", "N"},
+                                   {"N", "N", "N", "N", "N", "N", "N", "N"}};
 
-    private Point origin;
+    private String blueStart[][] = {{"N", "N", "N", "N", "N", "N", "N", "N"},
+                                    {"N", "N", "N", "N", "N", "N", "N", "N"},
+                                    {"N", "N", "N", "N", "N", "N", "N", "N"},
+                                    {"N", "N", "N", "N", "N", "N", "N", "N"},
+                                    {"N", "N", "N", "N", "N", "N", "N", "N"},
+                                    {"N", "N", "S", "S", "S", "S", "N", "N"},
+                                    {"C", "P", "R", "R", "R", "R", "P", "C"},
+                                    {"H", "A", "T", "B", "W", "T", "A", "H"}};
 
-    private static Cursor cursor;
+    private Bitmap mapGraphics;
+    private Bitmap zoomedMapGraphics;
+
+    public Point origin;
+
+    public Cursor cursor;
+
+    private boolean zoomed = false;
 
 
     //-------------------------------------------------------------
     //Constructors
     //-------------------------------------------------------------
-
-    /**
-     * Constructs a map object which is completely blank, using a given height and width.
-     * @param width The width of a the map.
-     * @param height The height of the map.
-     */
-    public Map(int width, int height, Bitmap bitmap, Point origin, Cursor cursor){
-
-        //Store the maps width and height.
-        this.width = width;
-        this.height = height;
-        this.bitmap = bitmap;
+    public Map(Bitmap mapBitmap, Bitmap cursorBitmap, Point origin){
+        this.mapGraphics = mapBitmap;
+        this.zoomedMapGraphics = resize(mapGraphics, 1.4f, 1.4f);
         this.origin = origin;
-        this.cursor = cursor;
+        this.tileSet = new Tile[8][8];
 
-        //Create an empty list of tiles.
-        this.map = new HashSet<Tile>();
-
-        for(int x = 0; x < width; x++){
-            for(int y = 0; y < height; y++){
-                //map.add(new BlankTile(x, y));
+        for(int x = 0; x < tileSet.length; ++x){
+            for(int y = 0; y < tileSet[x].length; ++y){
+                tileSet[x][y] = new Tile(x, y, origin, cursorBitmap);
             }
         }
 
-    }
+        this.cursor = new Cursor(getTileAt(0, 0), cursorBitmap);
 
-    public Map(HashSet<Tile> tile_set){
-        map = tile_set;
+        populate(redStart, 1);
+        populate(blueStart, 2);
+
     }
 
     //-------------------------------------------------------------
     //Methods
     //-------------------------------------------------------------
 
-    //MOVEMENT
+    /**Populates the initial game piece layout*/
+    private void populate(String[][] deployment, int player){
+        Direction dir;
+        if(player == 1){
+            dir = Direction.DOWN;
+        }
+        else{
+            dir = Direction.UP;
+        }
+
+        for(int x = 0; x < 8; ++x){
+            for(int y = 0; y < 8; ++y){
+                Piece p;
+                switch (deployment[y][x]){
+                    case "N":
+                        break;
+                    case "W":
+                        p = new WizardPiece(player, dir);
+                        tileSet[x][y].setPiece(p);
+                        pieces.add(p);
+                        break;
+                    case "S":
+                        p = new SoldierPiece(player, dir);
+                        tileSet[x][y].setPiece(p);
+                        pieces.add(p);
+                        break;
+                    case "T":
+                        p = new TrebuchetPiece(player, dir);
+                        tileSet[x][y].setPiece(p);
+                        pieces.add(p);
+                        break;
+                    case "P":
+                        p = new PalisadePiece(player, dir);
+                        tileSet[x][y].setPiece(p);
+                        pieces.add(p);
+                        break;
+                    case "R":
+                        p = new SpearmanPiece(player, dir);
+                        tileSet[x][y].setPiece(p);
+                        pieces.add(p);
+                        break;
+                    case "H":
+                        p = new HeavyPiece(player, dir);
+                        tileSet[x][y].setPiece(p);
+                        pieces.add(p);
+                        break;
+                    case "A":
+                        p = new ArcherPiece(player, dir);
+                        tileSet[x][y].setPiece(p);
+                        pieces.add(p);
+                        break;
+                    case "C":
+                        p = new ClericPiece(player, dir);
+                        tileSet[x][y].setPiece(p);
+                        pieces.add(p);
+                        break;
+                    case "B":
+                        p = new SoldierPiece(player, dir);
+                        tileSet[x][y].setPiece(p);
+                        pieces.add(p);
+                        break;
+                }
+            }
+        }
+    }
 
     /**
-     * Moves the given piece one tile in the give direction.
+     * Moves the cursor one tile in the given direction.
      * @param d Direction of movement.
      * @return If successful, returns true.
      */
     public boolean moveCursor(Game.Direction d){
-        Point loc = cursor.getLocation();//Get 'p's X and Y Location
+        int x = cursor.xPos;
+        int y = cursor.yPos;
 
         switch (d){
             case UP:
-                loc.y-=1;
-                cursor.setLocation(loc, origin);
+                --y;
+                if(y < 0){ y = 0; }
+                cursor.setLocation(tileSet[x][y]);
                 break;
             case DOWN:
-                loc.y+=1;
-                cursor.setLocation(loc, origin);
+                ++y;
+                if(y > 8){ y = 8; }
+                cursor.setLocation(tileSet[x][y]);
                 break;
             case LEFT:
-                loc.x-=1;
-                cursor.setLocation(loc, origin);
+                ++x;
+                if(x > 8){ x = 8; }
+                cursor.setLocation(tileSet[x][y]);
                 break;
             case RIGHT:
-                loc.x+=1;
-                cursor.setLocation(loc, origin);
+                --x;
+                if(x < 0){ x = 0; }
+                cursor.setLocation(tileSet[x][y]);
                 break;
         }
-        Tile targetTile = getAdjacentTile(loc, d);
+//        Tile targetTile = getAdjacentTile(loc, d);
 
 //        if(targetTile != null && targetTile.containsPiece()){
 //            p.setLocation(new Point(targetTile.getX(), targetTile.getY()));
@@ -115,12 +202,14 @@ public class Map{
 
     public boolean movePiece(Piece p, Direction d){
         Point loc = p.getLocation();
-        Tile targetTile = getAdjacentTile(loc, d);
+        int x = (int)loc.x;
+        int y = (int)loc.y;
+        Tile targetTile = getAdjacentTile(x, y, d);
 
         if(targetTile != null && targetTile.containsPiece()){
-            p.setLocation(new Point(targetTile.getX(), targetTile.getY()), origin);
+            p.setLocation(new Point(targetTile.getX(), targetTile.getY()));
 
-            Tile homeTile = getTileAt(loc);
+            Tile homeTile = getTileAt(x, y);
             if(homeTile.containsPiece(p)){
                 homeTile.removePiece();
                 return targetTile.setPiece(p);
@@ -132,18 +221,17 @@ public class Map{
         }
     }
 
-    private Tile getAdjacentTile(Point loc, Game.Direction d){
-        float x = loc.x, y = loc.y;
+    private Tile getAdjacentTile(int x, int y, Game.Direction d){
 
         switch(d){
             case UP:
-                y = y-1;
+                --y;
             case DOWN:
-                y = y+1;
+                ++y;
             case LEFT:
-                x = x - 1;
+                --x;
             case RIGHT:
-                x = x + 1;
+                ++x;
         }
         return getTileAt(x, y);
     }
@@ -167,21 +255,38 @@ public class Map{
     //Getters and Setters
     //-------------------------------------------------------------
 
-    public Tile getTileAt(float x, float y){
-        for(Tile t : map){
-            if(t.getX() == x && t.getY() == y)
-                return t;
-        }
-        return null;
+    /*Method to return the tile at a location*/
+    public Tile getTileAt(int x, int y){
+        return tileSet[x][y];
     }
 
+    /*Method to translate points for easier programming*/
+    public Tile getTileAt(Point p){
+        int x = (int)p.x;
+        int y = (int)p.y;
+        return getTileAt(x, y);
+    }
+
+    /*Method to return ArrayList of adjacent tiles*/
     public ArrayList<Tile> getAdjacentTiles(Tile p){
 
         ArrayList<Tile> adjTiles = new ArrayList<>();
 
-        for(Tile t : map){
-            if(getDistanceTo(p, t) == 1)
-                adjTiles.add(t);
+        int pX = p.getX();
+        int pY = p.getY();
+
+        if(pX == 0){ adjTiles.add(getTileAt(1, pY)); }
+        else if(pX == 8){ adjTiles.add(getTileAt(7, pY)); }
+        else{
+            adjTiles.add(getTileAt(pX + 1, pY));
+            adjTiles.add(getTileAt(pX - 1, pY));
+        }
+
+        if(pY == 0){ adjTiles.add(getTileAt(pX, 1)); }
+        else if(pY == 8){ adjTiles.add(getTileAt(pX, 7)); }
+        else{
+            adjTiles.add(getTileAt(pX, pY + 1));
+            adjTiles.add(getTileAt(pX, pY - 1));
         }
 
         return adjTiles;
@@ -191,24 +296,65 @@ public class Map{
         return Math.abs(src.getX() - target.getX()) + Math.abs(src.getY() - target.getY());
     }
 
-    public Tile getTileAt(Point loc){
-        return getTileAt(loc.getX(), loc.getY());
-    }
-
-    public int getWidth(){
-        return bitmap.getWidth();
-    }
-
-    public int getHeight(){
-        return bitmap.getHeight();
-    }
-
     public ArrayList<Piece> getPieces(){
         return pieces;
     }
 
+    private Bitmap resize(Bitmap b, float scaleX, float scaleY){
+        int sizeX = (int)(mapGraphics.getWidth() * scaleX);
+        int sizeY = (int)(mapGraphics.getHeight() * scaleY);
+        return Bitmap.createScaledBitmap(b, sizeX, sizeY, false);
+    }
+
+    /*Specify mode to draw in, adjust origin*/
+    public void setZoom (Boolean z, Point o){
+        zoomed = z;
+        cursor.setZoom(z);
+        this.origin = o;
+
+        for(int i = 0; i < tileSet.length; ++i){
+            for(int j = 0; j < tileSet[i].length; ++j){
+                tileSet[i][j].setOrigin(o);
+                tileSet[i][j].calculateScreenPos(z);
+            }
+        }
+    }
+
+    /*Debug method for grid UI adjustment*/
+    public void setGrid(float x, float xMod, float y, float yMod, Point o){
+        this.origin = o;
+        for(int i = 0; i < tileSet.length; ++i){
+            for(int j = 0; j < tileSet[i].length; ++j){
+                tileSet[i][j].setConstants(x, xMod, y, yMod, o);
+            }
+        }
+    }
+
     public void draw (Canvas canvas){
-        //TODO: CENTER DRAW
-        canvas.drawBitmap(bitmap, (canvas.getWidth()/2) - (bitmap.getWidth()/2), (canvas.getHeight()/2) - (bitmap.getHeight()/2), null);
+        if(!zoomed) {
+            canvas.drawBitmap(mapGraphics,
+                    (canvas.getWidth() / 2) - (mapGraphics.getWidth() / 2),
+                    (canvas.getHeight() / 2) - (mapGraphics.getHeight() / 2),
+                    null);
+        }
+        else {
+            canvas.drawBitmap(zoomedMapGraphics,
+                    (canvas.getWidth() / 2) - (zoomedMapGraphics.getWidth() / 2),
+                    (canvas.getHeight() / 2) - (zoomedMapGraphics.getHeight() / 2),
+                    null);
+        }
+        //Comment or uncomment this to toggle the debug grid placement view.
+        /*
+        for(int x = 0; x < tileSet.length; ++x){
+            for(int y = 0; y < tileSet[x].length; ++y){
+                tileSet[x][y].debugDraw(canvas);
+            }
+        }
+        */
+
+        cursor.draw(canvas);
+        for(Piece p : pieces){
+            p.draw(canvas, tileSet[(int) p.getLocation().getX()][(int) p.getLocation().getY()].getScreenLocation());
+        }
     }
 }

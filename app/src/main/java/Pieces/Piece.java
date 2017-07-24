@@ -22,6 +22,16 @@ public abstract class Piece {
     private static int ID_COUNTER = 0;
     String TAG = Piece.class.getSimpleName();
 
+    //This string is used to find which bitmap to use for drawing.
+    //The convention used is "_colour_direction_type"
+    private String bitmapURL;
+    private Bitmap bitmap;
+
+    //Each image needs to be centered on its tile differently due to their different sizes, so have
+    // an offset for each type of unit.
+    private int xOff = 0;
+    private int yOff = 0;
+
     /**
      * Unit Statistics
      * There are the default rules for a unit.
@@ -37,14 +47,12 @@ public abstract class Piece {
      */
     protected int CURRENT_HP = MAX_HP;
     private Point CURRENT_LOCATION = new Point(0,0);
-    private Point SCREEN_LOCATION;
     private Direction UNIT_FACING = Direction.UP;
     private boolean isTouched;
     /**
      * Unit Identifiers
      * Theses are the ways for the unit to be uniquely identified
      */
-    private Bitmap bitmap;
     private String name;
     private int UNIT_ID;
     private int OWNER_ID;
@@ -52,18 +60,82 @@ public abstract class Piece {
     //----------------------------------------------------------------------------------------------
     //Constructors
     //----------------------------------------------------------------------------------------------
-    public Piece(String name, int OWNER_ID, Bitmap bitmap, Point origin){
+    public Piece(String name, int OWNER_ID, Direction initialDirection){
         this.name = name;
-        this.bitmap = bitmap;
         this.UNIT_ID = ID_COUNTER++;
         this.OWNER_ID = OWNER_ID;
-        this.SCREEN_LOCATION = origin;
+        this.UNIT_FACING = initialDirection;
+
+        this.bitmapURL = buildURL();
+
+        switch(name){
+            case "heavy":
+                xOff = -3;
+                yOff = -45;
+                break;
+            case "archer":
+                xOff = -5;
+                yOff = -50;
+                break;
+            case "trebuchet":
+                xOff = -3;
+                yOff = -44;
+                break;
+            case "wizard":
+                xOff = -5;
+                yOff = -50;
+                break;
+            case "cleric":
+                xOff = -5;
+                yOff = -45;
+                break;
+            case "palisade":
+                xOff = 1;
+                yOff = -45;
+                break;
+            case "soldier":
+                xOff = -2;
+                yOff = -52;
+                break;
+            case "spearman":
+                xOff = -5;
+                yOff = -54;
+        }
     }
 
     //----------------------------------------------------------------------------------------------
     //Methods.
     //----------------------------------------------------------------------------------------------
+    private String buildURL(){
+        StringBuilder sb = new StringBuilder("_");
+        if(OWNER_ID == 1){
+            sb.append("blue");
+        }
+        else{
+            sb.append("blue");
+        }
 
+        sb.append("_");
+
+        switch (UNIT_FACING){
+            case DOWN:
+                sb.append("down");
+                break;
+            case UP:
+                sb.append("up");
+                break;
+            case LEFT:
+                sb.append("left");
+                break;
+            case RIGHT:
+                sb.append("right");
+                break;
+        }
+
+        sb.append("_");
+        sb.append(name);
+        return sb.toString();
+    }
     /**
      *Set the units max hp, and changes the current hp to have the same total 'damage' inflicted on the unit.
      * @param hp A natural number greater to or equal to 1.
@@ -164,32 +236,36 @@ public abstract class Piece {
         return OWNER_ID;
     }
 
+    /**
+     * Returns the board coordinates for this piece
+     * @return
+     */
     public Point getLocation(){
         return CURRENT_LOCATION;
     }
 
-    public boolean setLocation(Point p, Point origin){
+    /**
+     * Returns the bitmap url for this piece
+     * @return
+     */
+    public String getBitmapURL(){ return bitmapURL; }
+    /**
+     * Sets the board location and calculates the on screen position of the piece
+     * @param p Board coordinates
+     * @return
+     */
+    public boolean setLocation(Point p){
         CURRENT_LOCATION = p;
-        SCREEN_LOCATION = setScreenLocation(origin);
         return true;
     }
 
-    /**calculate pixel position based on origin and piece coordinates*/
-    private Point setScreenLocation(Point origin){
-        /*algorithm: measure along one axis the distance in pixels, then add modifier for
-        distance along the opposite axis due to the diagonal nature of the game view.
-        Do the same for the other axis.*/
-        Float x = origin.getX()+(CURRENT_LOCATION.getX()*-105)+(CURRENT_LOCATION.getY()*-63);
-        Float y = origin.getY()+(CURRENT_LOCATION.getY()*59)+(CURRENT_LOCATION.getX()*-33);
-        Point xy = new Point(x, y);
-
-        return xy;
+    public void setBitmap(Bitmap bm){
+        bitmap = bm;
     }
 
 
-    public void draw(Canvas canvas){
-        canvas.drawBitmap(bitmap, SCREEN_LOCATION.x,
-                SCREEN_LOCATION.y, null);
+    public void draw(Canvas canvas, Point p){
+                canvas.drawBitmap(bitmap, p.x + xOff,
+                p.y + yOff, null);
     }
-
 }

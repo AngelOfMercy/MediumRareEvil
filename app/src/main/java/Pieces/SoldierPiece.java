@@ -1,18 +1,21 @@
 package Pieces;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 
-import com.example.angelofmercy.mediumrareevil.R;
+import java.util.ArrayList;
 
-import Game.Utility.Point;
+import Game.Game;
+import Game.Tiles.Tile;
+import Game.Map;
 
 /**
  * Created by AngelOfMercy on 14/01/2016.
  */
 public class SoldierPiece extends Piece {
+    public SoldierPiece(int OWNER_ID, Game.Direction dir){
+        super("soldier", OWNER_ID, dir);
+    }
 
-    public SoldierPiece(int OWNER_ID, Bitmap bitmap, Point origin){
-        super("Soldier", OWNER_ID,  bitmap, origin);
+    ArrayList<Tile> getPossibleMoves(Map map){
+
+        return null;
     }
 }

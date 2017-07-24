@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.arbitraryname.summer_project.MainActivity"
+    android:background="@color/beige"
     tools:showIn="@layout/activity_main">
 
     <RelativeLayout
@@ -131,6 +132,56 @@
         android:text="Quit"
         android:id="@+id/QuitButton"
         android:textSize="10dp" />
+
+
+    <!--Uncomment to get grid alignment debug UI
+    <EditText android:id="@+id/x_var"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/QuitButton"
+        android:hint="@string/x_hint" />
+
+    <EditText android:id="@+id/x_mod_var"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/x_var"
+        android:hint="@string/x_mod_hint" />
+
+    <EditText android:id="@+id/y_var"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/x_mod_var"
+        android:hint="@string/y_hint" />
+
+    <EditText android:id="@+id/y_mod_var"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/y_var"
+        android:hint="@string/y_mod_hint" />
+
+    <EditText android:id="@+id/x_origin"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/y_mod_var"
+        android:hint="@string/x_origin_hint" />
+
+    <EditText android:id="@+id/y_origin"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/x_origin"
+        android:hint="@string/y_origin_hint" />
+
+    <Button android:id="@+id/sendBtn"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:text="@string/ok"
+        android:textSize="10dp"
+        android:onClick="sendValues"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/y_origin"
+        android:layout_toEndOf="@+id/y_origin" />
+        -->
+
     <Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
@@ -138,16 +189,15 @@
         android:text="^"
         android:onClick="toggleFFB"
         android:id="@+id/fatFingerToggle"
-        android:layout_above="@+id/fatFingerBar"
-        android:layout_alignRight="@+id/QuitButton"
-        android:layout_alignEnd="@+id/QuitButton" />
+        android:layout_above="@+id/fatFingerBar" />
 
-   <com.example.angelofmercy.mediumrareevil.MainGamePanel
+    <com.example.angelofmercy.mediumrareevil.MainGamePanel
        android:id="@+id/mainPanel"
        android:layout_width="match_parent"
        android:layout_height="match_parent"
        android:layout_alignParentRight="true"
        android:layout_alignParentEnd="true"
-       android:layout_above="@+id/fatFingerBar" />
+       android:layout_above="@+id/fatFingerBar">
+   </com.example.angelofmercy.mediumrareevil.MainGamePanel>
 
 </RelativeLayout>

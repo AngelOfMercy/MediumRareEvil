@@ -6,23 +6,22 @@ package com.example.angelofmercy.mediumrareevil;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.MotionEvent;
-import android.view.Surface;
 import android.view.SurfaceView;
 import android.view.SurfaceHolder;
+
+import java.io.File;
 
 import Game.*;
 import Game.Utility.Point;
 import Pieces.Piece;
-import Pieces.SoldierPiece;
 
 public class MainGamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
@@ -30,27 +29,31 @@ public class MainGamePanel extends SurfaceView implements SurfaceHolder.Callback
 
     private MainThread thread;  //thread used to draw on the canvas
 
-    private Piece soldier;
-
-    private static Cursor cursor;
-
     private Map map;
 
-    private final Point origin = calculateOrigin();
+    private Game game;
+
+    //258, //75
+    private float xOff = 203, yOff = 88; //origin calculation constants
+    private float zXOff = 275, zYOff = 55; //zoomed origin calculation constants
+    private Point origin = calculateOrigin(); //screen location of point 0,0 on the map
+
+    public boolean zoomed = false;
+
     /**
-     * Implementing the SurfaceView window in XML requires these constructors
+     * Implementing the SurfaceView window in XML requires these three constructors
      */
     public MainGamePanel (Context context){
         super(context);
-        init();
+        init(context);
     }
     public MainGamePanel (Context context, AttributeSet attrs){
         super(context, attrs);
-        init();
+        init(context);
     }
     public MainGamePanel (Context context, AttributeSet attrs, int defStyle){
         super(context, attrs, defStyle);
-        init();
+        init(context);
     }
 
     @Override
@@ -80,21 +83,38 @@ public class MainGamePanel extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
+    /*Debug method for grid alignment*/
+    public void setGrid(float x, float xMod, float y, float yMod, float xOrigin, float yOrigin){
+        //recalculate origin
+        if(!zoomed) {
+            xOff = xOrigin;
+            yOff = yOrigin;
+        }
+        else{
+            zXOff = xOrigin;
+            zYOff = yOrigin;
+        }
+        this.origin = calculateOrigin();
+
+        map.setGrid(x, xMod, y, yMod, this.origin);
+    }
+
     /**
      * Drawing method to draw on the canvas in the SurfaceView.
+     * This method also updates the animation state of each object.
      */
     @Override
     protected void onDraw (Canvas canvas){
         //Canvas is when program is first loaded, so skip over at first.
         if(canvas != null) {
-            //this call refreshes the canvas, ready to be updated for the next frame
+            //This call refreshes the canvas, ready to be updated for the next frame.
             canvas.drawColor(0, PorterDuff.Mode.CLEAR);
+
             map.draw(canvas);
-            cursor.draw(canvas);
-            //soldier.draw(canvas);
         }
     }
-    //Origin calculated for positioning purposes
+
+    /* Method to calculate origin for positioning purposes*/
     public Point calculateOrigin(){
         //screen width used needs to be found
         DisplayMetrics metrics = new DisplayMetrics();
@@ -102,29 +122,53 @@ public class MainGamePanel extends SurfaceView implements SurfaceHolder.Callback
         int width = metrics.widthPixels;
 
         //point 0,0
-        return(new Point(width/2-220,10));
+        if (!zoomed){
+            return new Point(width/2 - xOff, yOff);
+        }
+        return new Point(width/2 - zXOff, zYOff);
     }
 
-    public void test() {
-        Point p = soldier.getLocation();
-        p.y = p.getY() + 1;
-        soldier.setLocation(p, origin);
+    public void zoomPanel(int inOut){
+        Log.d(TAG, "" + inOut);
+        zoomed = !zoomed;
+        origin = calculateOrigin();
+        map.setZoom(zoomed, origin);
     }
 
     public void move(Game.Direction d){
-        System.out.print("Direction:" + d);
+        Log.d(TAG, "" + d);
         map.moveCursor(d);
     }
 
+    public void select(){
+        game.select();
+    }
+
+    public Map getMap(){
+        return map;
+    }
+
     //Utility method for the constructors, containing initializations for variables
-    private void init(){
+    private void init(Context context){
         getHolder().addCallback(this);
 
-        cursor = new Cursor(origin, BitmapFactory.decodeResource(getResources(), R.drawable.cursor_placeholder));
+        map = new Map(BitmapFactory.decodeResource(getResources(), R.drawable.placeholder2),
+                BitmapFactory.decodeResource(getResources(), R.drawable.cursor_placeholder), origin);
 
-        soldier = new SoldierPiece(1, BitmapFactory.decodeResource(getResources(), R.drawable.soldier_blue), origin);
+        Player players[] = {new Player("p1"), new Player("p2")};
 
-        map = new Map(0,0, BitmapFactory.decodeResource(getResources(), R.drawable.placeholder2), origin, cursor);
+        game = new Game(players, map);
+
+        for(Piece p : map.getPieces()){
+            String bitmapURL = p.getBitmapURL();
+            Log.d(TAG, "x: " + p.getLocation().x + ", y: " + p.getLocation().y + " [" + bitmapURL + "]");
+
+            int id = context.getResources().getIdentifier(bitmapURL, "drawable", context.getPackageName());
+
+            p.setBitmap(BitmapFactory.decodeResource(getResources(), id));
+        }
+
+
         this.setZOrderOnTop(true);
         SurfaceHolder holder = getHolder();
         holder.setFormat(PixelFormat.TRANSPARENT);

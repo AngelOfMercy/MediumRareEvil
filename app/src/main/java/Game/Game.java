@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
+import Game.Tiles.Tile;
 import Game.Utility.Point;
 import Pieces.Piece;
 
@@ -15,10 +16,11 @@ import Pieces.Piece;
 
 
 public class Game{
-
-    private ArrayList<Player> players;
-    private int CURRENT_PLAYER;
     private Map map;
+    private Player[] players;
+    private int turn = 0;
+
+    private Piece selected;
 
     public enum Direction {UP,
             DOWN,
@@ -31,13 +33,8 @@ public class Game{
 //--------------------------------------------------------------
 
     public Game(Player[] p, Map m){
-        if(p.length < 1)
-            throw new IllegalArgumentException("Need at least one player");
-
-        players = new ArrayList<Player>(Arrays.asList(p));
-
-        CURRENT_PLAYER = 0;
         map = m;
+        players = p;
     }
 
 //---------------------------------------------------------------
@@ -45,57 +42,42 @@ public class Game{
 //---------------------------------------------------------------
 
     /**
-     * Sets the current player to the next one in the array.
-     * Returns to the start of the array, if it would overflow.
+     * Increments current turn
      */
-    public void nextPlayer(){
-        CURRENT_PLAYER = (CURRENT_PLAYER+1)%players.size();
-    }
+    public void nextTurn(){ ++turn; }
 
     /**
-     * Moves the given piece one tile in the given direction.
-     *
-     * @param p The piece to move
-     * @param d The direction to move the piece.
-     * @return Returns true if the piece was succesfully moved.
+     * Handles cursor selection by checking the tile the cursor is over and reacting accordingly
+     * @return
      */
-    public boolean movePiece(Piece p, Direction d){
-        //If the piece is owned by the current player.
-        //It is allowed to be moved.
-        if(p.getOwnerID() == players.get(CURRENT_PLAYER).getID()){
-            return map.movePiece(p, d);
+    public boolean select(){
+        Tile tile = map.getTileAt(map.cursor.xPos, map.cursor.yPos);
+
+        if(tile.hasPiece()){
+            Piece p = tile.getPiece();
+
+            if(p.getOwnerID() == (turn & 1)){
+                selected = p;
+                return true;
+            }
+        }
+        else if(selected != null){
+            return movePiece(selected, tile);
         }
         return false;
     }
-
     /**
-     * Removes a player from turn rotation. Will return an exception if the player is not in the game.
-     * @param p The player to remove
+     * Moves the given piece to the gven tile
+     *
+     * @param p The piece to move
+     * @param t The direction to move the piece.
+     * @return Returns true if the piece was succesfully moved.
      */
-    public void removePlayer(Player p){
-        //TODO
-        int indexOfPlayer = players.indexOf(p);//Index of the player in players
-
-        //If the given player is not playing the game, throw an exception.
-        if(indexOfPlayer < 0)
-            throw new NoSuchElementException("Player not found");
-
-
-        //If the player is before the current player in the list, decrease the lists count by one.
-        if(indexOfPlayer <= CURRENT_PLAYER)
-            CURRENT_PLAYER--;
-
-        players.remove(p);
+    public boolean movePiece(Piece p, Tile t){
+        p.setLocation(t.getLocation());
+        return true;
     }
 
-    /**
-     * Adds the given player to the end of the current player cycle.
-     * @param p
-     * @return
-     */
-    public void addPlayer(Player p){
-        players.add(p);
-    }
 
 //---------------------------------------------------------------
 //Getters and Setters
@@ -105,9 +87,7 @@ public class Game{
      * Returns the current player.
      * @return
      */
-    public Player getCurrentPlayer(){
-        return players.get(CURRENT_PLAYER);
-    }
+    public int getCurrentPlayer(){ return turn & 1; }
 
     /**
      * Returns the map of the current game.

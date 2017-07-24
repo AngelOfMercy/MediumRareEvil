@@ -9,4 +9,10 @@
     <string name="health">H</string>
     <string name="damage">D</string>
     <string name="movement">M</string>
+    <string name="x_hint">X</string>
+    <string name="x_mod_hint">X mod</string>
+    <string name="y_hint">Y</string>
+    <string name="y_mod_hint">Y mod</string>
+    <string name="x_origin_hint">X ori</string>
+    <string name="y_origin_hint">Y ori</string>
 </resources>

@@ -10,42 +10,59 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
 import Game.Game.Direction;
+import Game.Tiles.Tile;
 import Game.Utility.Point;
 
 public class Cursor {
-    private Point CURRENT_LOCATION;
-    private Point SCREEN_LOCATION;
-    Bitmap bitmap;
+    private Tile tile;
+    public int xPos = 0;
+    public int yPos = 0;
 
-    public Cursor (Point origin, Bitmap bitmap){
-        CURRENT_LOCATION = new Point(0,0);
-        origin.y += 37;
-        SCREEN_LOCATION = origin;
-        this.bitmap = bitmap;
+    private boolean zoomed = false;
+
+    Bitmap cursorImage;
+    Bitmap zoomedCursorImage;
+
+    public Cursor (Tile start, Bitmap bitmap){
+        tile = start;
+        this.cursorImage = bitmap;
+        this.zoomedCursorImage = resize(cursorImage, 1.4f, 1.4f);
     }
 
-    public Point getLocation(){
-        return CURRENT_LOCATION;
-    }
-    /*Directional movement method adds and subtracts from class fields.*/
-    public void setLocation(Point p, Point origin){
-        CURRENT_LOCATION = p;
-        SCREEN_LOCATION = setScreenLocation(origin);
+    private Bitmap resize(Bitmap b, float scaleX, float scaleY){
+        int sizeX = (int)(getWidth() * scaleX);
+        int sizeY = (int)(getHeight() * scaleY);
+        return Bitmap.createScaledBitmap(b, sizeX, sizeY, false);
     }
 
-    /**calculate pixel position based on origin and piece coordinates*/
-    private Point setScreenLocation(Point origin){
-        /*algorithm: measure along one axis the distance in pixels, then add modifier for
-        distance along the opposite axis due to the diagonal nature of the game view.
-        Do the same for the other axis.*/
-        Float x = origin.getX()+(CURRENT_LOCATION.getX()*-105)+(CURRENT_LOCATION.getY()*-63);
-        Float y = origin.getY()+(CURRENT_LOCATION.getY()*59)+(CURRENT_LOCATION.getX()*-33);
-        Point xy = new Point(x, y);
+    public void setZoom(Boolean z){ zoomed = z; }
 
-        return xy;
+    public Tile getLocation(){
+        return tile;
+    }
+
+    public void setLocation(Tile t){
+        tile = t;
+        xPos = t.getX();
+        yPos = t.getY();
+    }
+
+    public int getWidth(){
+        if(!zoomed) return cursorImage.getWidth();
+        return zoomedCursorImage.getWidth();
+    }
+
+    public int getHeight(){
+        if(!zoomed) return cursorImage.getHeight();
+        return zoomedCursorImage.getHeight();
     }
 
     public void draw(Canvas canvas){
-        canvas.drawBitmap(bitmap, SCREEN_LOCATION.x, SCREEN_LOCATION.y, null);
+        if(!zoomed) {
+            canvas.drawBitmap(cursorImage, tile.screenPosX, tile.screenPosY, null);
+        }
+        else{
+            canvas.drawBitmap(zoomedCursorImage, tile.screenPosX, tile.screenPosY, null);
+        }
     }
 }
