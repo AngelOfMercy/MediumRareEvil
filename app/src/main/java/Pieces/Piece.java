@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 import Game.Game;
 import Game.Game.*;
 import Game.Utility.Point;
@@ -185,6 +187,9 @@ public abstract class Piece {
         return ATTACK_DAMAGE;
     }
 
+
+    public ArrayList<Point> getPossibleMoves(){ return null; }
+
     /**
      * Get the total movement for this unit.
      * @return
@@ -258,6 +263,7 @@ public abstract class Piece {
         CURRENT_LOCATION = p;
         return true;
     }
+
 
     public void setBitmap(Bitmap bm){
         bitmap = bm;

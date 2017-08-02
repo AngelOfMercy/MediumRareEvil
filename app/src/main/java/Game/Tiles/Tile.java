@@ -27,7 +27,6 @@ public class Tile implements Comparable<Tile>{
 
     private boolean zoomed = false;
 
-    //126, -74, 70, 41
     private float xOff = 90, xOffMod = -52.5f, yOff = 49, yOffMod = 29;
     private float zXOff = 126, zXOffMod = -75, zYOff = 70, zYOffMod = 41;
 

@@ -155,7 +155,7 @@ public class MainGamePanel extends SurfaceView implements SurfaceHolder.Callback
         map = new Map(BitmapFactory.decodeResource(getResources(), R.drawable.placeholder2),
                 BitmapFactory.decodeResource(getResources(), R.drawable.cursor_placeholder), origin);
 
-        Player players[] = {new Player("p1"), new Player("p2")};
+        Player players[] = {new Player("p0"), new Player("p1")};
 
         game = new Game(players, map);
 

@@ -1,5 +1,6 @@
 package Game;
 
+import android.app.PendingIntent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
@@ -76,8 +77,8 @@ public class Map{
 
         this.cursor = new Cursor(getTileAt(0, 0), cursorBitmap);
 
-        populate(redStart, 1);
-        populate(blueStart, 2);
+        populate(redStart, 0);
+        populate(blueStart, 1);
 
     }
 
@@ -88,7 +89,7 @@ public class Map{
     /**Populates the initial game piece layout*/
     private void populate(String[][] deployment, int player){
         Direction dir;
-        if(player == 1){
+        if(player == 0){
             dir = Direction.DOWN;
         }
         else{
@@ -160,43 +161,36 @@ public class Map{
         int x = cursor.xPos;
         int y = cursor.yPos;
 
-        switch (d){
+        switch (d) {
             case UP:
                 --y;
-                if(y < 0){ y = 0; }
+                if (y < 0) {
+                    y = 0;
+                }
                 cursor.setLocation(tileSet[x][y]);
                 break;
             case DOWN:
                 ++y;
-                if(y > 8){ y = 8; }
+                if (y > 8) {
+                    y = 8;
+                }
                 cursor.setLocation(tileSet[x][y]);
                 break;
             case LEFT:
                 ++x;
-                if(x > 8){ x = 8; }
+                if (x > 8) {
+                    x = 8;
+                }
                 cursor.setLocation(tileSet[x][y]);
                 break;
             case RIGHT:
                 --x;
-                if(x < 0){ x = 0; }
+                if (x < 0) {
+                    x = 0;
+                }
                 cursor.setLocation(tileSet[x][y]);
                 break;
         }
-//        Tile targetTile = getAdjacentTile(loc, d);
-
-//        if(targetTile != null && targetTile.containsPiece()){
-//            p.setLocation(new Point(targetTile.getX(), targetTile.getY()));
-//
-//            Tile homeTile = getTileAt(loc);
-//            if(homeTile.containsPiece(p)){
-//                homeTile.removePiece();
-//                return targetTile.setPiece(p);
-//            }
-//            return false;
-//        }
-//        else{
-//            return false;
-//        }
         return true;
     }
 
@@ -237,18 +231,11 @@ public class Map{
     }
 
     public ArrayList<Tile> getValidMovement(Piece p){
-        //TODO
-
-        //Get all tiles within Piece.getMovement spaces.
-
-        //Add them to the array
-
-        //Remove all
-
+        ArrayList<Point> possibleTiles = p.getPossibleMoves();
+        ArrayList<Tile> moveTiles = new ArrayList<Tile>();
+        ArrayList<Tile> attackTiles = new ArrayList<Tile>();
         return null;
-
     }
-
 
 
     //-------------------------------------------------------------
@@ -258,6 +245,12 @@ public class Map{
     /*Method to return the tile at a location*/
     public Tile getTileAt(int x, int y){
         return tileSet[x][y];
+    }
+
+    /*Method to move a piece from one tile to another*/
+    public void movePiece(Tile t1, Tile t2){
+        t2.setPiece(t1.getPiece());
+        t1.removePiece();
     }
 
     /*Method to translate points for easier programming*/
@@ -330,6 +323,10 @@ public class Map{
         }
     }
 
+    /**
+     * Draw the bitmaps on the screen
+     * @param canvas the canvas object to draw on
+     */
     public void draw (Canvas canvas){
         if(!zoomed) {
             canvas.drawBitmap(mapGraphics,
@@ -354,7 +351,7 @@ public class Map{
 
         cursor.draw(canvas);
         for(Piece p : pieces){
-            p.draw(canvas, tileSet[(int) p.getLocation().getX()][(int) p.getLocation().getY()].getScreenLocation());
+            p.draw(canvas, getTileAt(p.getLocation()).getScreenLocation());
         }
     }
 }
