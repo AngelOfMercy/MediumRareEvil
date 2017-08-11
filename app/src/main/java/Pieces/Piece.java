@@ -2,17 +2,13 @@ package Pieces;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.util.Log;
 
 import java.util.ArrayList;
 
-import Game.Game;
 import Game.Game.*;
+import Game.Tiles.Tile;
 import Game.Utility.Point;
 import Game.Map;
-/**
- * Created by AngelOfMercy on 14/01/2016.
- */
 public abstract class Piece {
 
     //----------------------------------------------------------------------------------------------
@@ -34,11 +30,13 @@ public abstract class Piece {
     private int xOff = 0;
     private int yOff = 0;
 
+    public ArrayList<Tile>moveTiles = new ArrayList<>();
+    public ArrayList<Tile>attackTiles = new ArrayList<>();
+
     /**
      * Unit Statistics
      * There are the default rules for a unit.
      */
-    protected int TOTAL_MOVEMENT = 3;
     protected int ATTACK_RANGE_MIN = 0, ATTACK_RANGE_MAX = 0;
     protected int ATTACK_DAMAGE = 1;
     protected int MAX_HP = 2;
@@ -50,7 +48,6 @@ public abstract class Piece {
     protected int CURRENT_HP = MAX_HP;
     private Point CURRENT_LOCATION = new Point(0,0);
     private Direction UNIT_FACING = Direction.UP;
-    private boolean isTouched;
     /**
      * Unit Identifiers
      * Theses are the ways for the unit to be uniquely identified
@@ -150,6 +147,19 @@ public abstract class Piece {
         CURRENT_HP = MAX_HP - difference;
     }
 
+    public boolean checkTile(Tile tile){
+        if(tile.hasPiece()){
+            if(tile.getPiece().getOwnerID() != this.getOwnerID()){
+                attackTiles.add(tile);
+                return true;
+            }
+            return false;
+        }
+        else{
+            moveTiles.add(tile);
+            return false;
+        }
+    }
     /**
      * Executes an attack against a target.
      * Determines if the target is legal and deals the appropriate amount of damage.
@@ -188,15 +198,7 @@ public abstract class Piece {
     }
 
 
-    public ArrayList<Point> getPossibleMoves(){ return null; }
-
-    /**
-     * Get the total movement for this unit.
-     * @return
-     */
-    public int getTotalMovement(){
-        return TOTAL_MOVEMENT;
-    }
+    public void findPossibleMoves(Tile[][] tileset){  }
 
     /**
      * Get the minimum distance of the units attack.

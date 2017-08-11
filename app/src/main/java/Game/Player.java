@@ -1,8 +1,4 @@
 package Game;
-
-/**
- * Created by AngelOfMercy on 28/01/2016.
- */
 public class Player {
 
     private static int ID_GENERATION = 1;

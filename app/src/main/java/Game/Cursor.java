@@ -3,8 +3,6 @@ package Game;
 /**
  * UI design element used to signify the player's selection on the board.
  * It can be moved incrementally using buttons.
- *
- * Created by Larry on 1/19/2016.
  */
 import android.graphics.Bitmap;
 import android.graphics.Canvas;

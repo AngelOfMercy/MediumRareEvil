@@ -6,9 +6,6 @@ import Game.Game;
 import Game.Tiles.Tile;
 import Game.Utility.Point;
 
-/**
- * Created by Larry on 7/17/2017.
- */
 public class TrebuchetPiece extends Piece implements Ruleset{
     public TrebuchetPiece(int OWNER_ID, Game.Direction dir){
         super("trebuchet", OWNER_ID, dir);
@@ -20,20 +17,19 @@ public class TrebuchetPiece extends Piece implements Ruleset{
      * @return the set of coordinates
      */
     @Override
-    public ArrayList<Point> getPossibleMoves(){
-        ArrayList<Point> tiles = new ArrayList<>();
+    public void findPossibleMoves(Tile[][] tileset){
         int x = (int)this.getLocation().x;
         int y = (int)this.getLocation().y;
 
-        tiles.add(new Point(x + 1, y));
-        tiles.add(new Point(x - 1, y));
-        tiles.add(new Point(x, y + 1));
-        tiles.add(new Point(x, y - 1));
-        tiles.add(new Point(x + 1, y + 1));
-        tiles.add(new Point(x - 1, y - 1));
-        tiles.add(new Point(x + 1, y - 1));
-        tiles.add(new Point(x - 1, y + 1));
+        //Lazy coding here, but the check is only performed once so it doesn't matter
+        if(x < 7 && y < 7){ checkTile(tileset[x + 1][y + 1]); }
+        if(x > 0 && y < 7){ checkTile(tileset[x - 1][y + 1]); }
+        if(x < 7 && y > 0){ checkTile(tileset[x + 1][y - 1]); }
+        if(x > 0 && y > 0){ checkTile(tileset[x - 1][y - 1]); }
+        if(x > 0){ checkTile(tileset[x - 1][y]); }
+        if(x < 7){ checkTile(tileset[x + 1][y]); }
+        if(y > 0){ checkTile(tileset[x][y - 1]); }
+        if(y < 7){ checkTile(tileset[x][y + 1]); }
 
-        return tiles;
     }
 }

@@ -1,19 +1,10 @@
 package Game;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.NoSuchElementException;
-
 import Game.Tiles.Tile;
-import Game.Utility.Point;
 import Pieces.Piece;
-
-/**
- * Created by AngelOfMercy on 28/01/2016.
- */
-
 
 public class Game{
     private Map map;
@@ -21,6 +12,12 @@ public class Game{
     private int turn = 0;
 
     private Piece selected;
+
+    private Bitmap greenHighlights;
+    private Bitmap zoomedGreenHighlights;
+
+    private Bitmap redHighlights;
+    private Bitmap zoomedRedHighlights;
 
     public enum Direction {UP,
             DOWN,
@@ -61,7 +58,7 @@ public class Game{
             //if it belongs to the correct player
             if(p.getOwnerID() == (turn & 1)){
                 selected = p;
-                map.getValidMovement(selected);
+                map.select(selected);
                 return true;
             }
 
@@ -96,6 +93,33 @@ public class Game{
 //---------------------------------------------------------------
 
     /**
+     * Method to set the highlight colours for tile selection. Separate from the map initializer for
+     * personal clarity reasons.
+     * @param green the bitmap to be used as a green highlight
+     * @param red the bitmap to be used as a red highlight
+     */
+    public void setHighlights(Bitmap green, Bitmap red){
+        greenHighlights = green;
+        zoomedGreenHighlights = resize(green, 1.4f, 1.4f);
+
+        redHighlights = red;
+        zoomedRedHighlights = resize(red, 1.4f, 1.4f);
+    }
+
+    /**
+     * Resize a bitmap by a by an x and y scalar
+     * @param b bitmap to be resized
+     * @param scaleX amount to scale horizontally
+     * @param scaleY amount to scale vertically
+     * @return the resized bitmap
+     */
+    private Bitmap resize(Bitmap b, float scaleX, float scaleY){
+        int sizeX = (int)(b.getWidth() * scaleX);
+        int sizeY = (int)(b.getHeight() * scaleY);
+        return Bitmap.createScaledBitmap(b, sizeX, sizeY, false);
+    }
+
+    /**
      * Returns the current player.
      * @return
      */
@@ -109,4 +133,30 @@ public class Game{
         return map;
     }
 
+    /**
+     * Draw the bitmaps on the screen
+     * @param canvas the canvas object to draw on
+     */
+    public void draw(Canvas canvas){
+        map.draw(canvas);
+
+        if(selected != null){
+            if(!map.getZoom()){
+                for(Tile tile : selected.moveTiles) {
+                    canvas.drawBitmap(greenHighlights, tile.screenPosX, tile.screenPosY, null);
+                }
+                for(Tile tile : selected.attackTiles){
+                    canvas.drawBitmap(redHighlights, tile.screenPosX, tile.screenPosY, null);
+                }
+            }
+            else{
+                for(Tile tile : selected.moveTiles) {
+                    canvas.drawBitmap(zoomedGreenHighlights, tile.screenPosX, tile.screenPosY, null);
+                }
+                for(Tile tile : selected.attackTiles){
+                    canvas.drawBitmap(zoomedRedHighlights, tile.screenPosX, tile.screenPosY, null);
+                }
+            }
+        }
+    }
 }

@@ -9,9 +9,6 @@ import Game.Map;
 import Game.Tiles.Tile;
 import Game.Utility.Point;
 
-/**
- * Created by AngelOfMercy on 14/01/2016.
- */
 public class WizardPiece extends Piece implements Ruleset{
 
     public WizardPiece(int OWNER_ID, Game.Direction dir){
@@ -42,44 +39,57 @@ public class WizardPiece extends Piece implements Ruleset{
      * @return the set of coordinates
      */
     @Override
-    public ArrayList<Point> getPossibleMoves(){
-        ArrayList<Point> tiles = new ArrayList<>();
+    public void findPossibleMoves(Tile[][] tileset){
         int x = (int)this.getLocation().x;
         int y = (int)this.getLocation().y;
 
         //south east
-        for(int i = x,  j = y; i < 8 && j < 8; ++i, ++j){
-            tiles.add(new Point(i, j));
+        for(int i = x + 1,  j = y + 1; i < 8 && j < 8; ++i, ++j){
+            if(checkTile(tileset[i][j])){
+                break;
+            }
         }
         //north east
-        for(int i = x,  j = y; i < 8 && j < 0; ++i, --j){
-            tiles.add(new Point(i, j));
+        for(int i = x + 1,  j = y - 1; i < 8 && j >= 0; ++i, --j){
+            if(checkTile(tileset[i][j])){
+                break;
+            }
         }
         //south west
-        for(int i = x,  j = y; i < 0 && j < 8; --i, ++j){
-            tiles.add(new Point(i, j));
+        for(int i = x - 1,  j = y + 1; i >= 0 && j < 8; --i, ++j){
+            if(checkTile(tileset[i][j])){
+                break;
+            }
         }
         //north west
-        for(int i = x,  j = y; i < 0 && j < 0; --i, --j){
-            tiles.add(new Point(i, j));
+        for(int i = x - 1,  j = y - 1; i >= 0 && j >= 0; --i, --j){
+            if(checkTile(tileset[i][j])){
+                break;
+            }
         }
         //East
-        for(int i = x; i < 8; ++i){
-            tiles.add(new Point(i, y));
+        for(int i = x + 1; i < 8; ++i){
+            if(checkTile(tileset[i][y])){
+                break;
+            }
         }
         //West
-        for(int i = x; i >= 0; ++i){
-            tiles.add(new Point(i, y));
+        for(int i = x - 1; i >= 0; --i){
+            if(checkTile(tileset[i][y])){
+                break;
+            }
         }
         //South
-        for(int i = y; i < 8; ++i){
-            tiles.add(new Point(x, i));
+        for(int i = y + 1; i < 8; ++i){
+            if(checkTile(tileset[x][i])){
+                break;
+            }
         }
         //North
-        for(int i = y; i >= 0; ++i){
-            tiles.add(new Point(x, i));
+        for(int i = y - 1; i >= 0; --i){
+            if(checkTile(tileset[x][i])){
+                break;
+            }
         }
-
-        return tiles;
     }
 }

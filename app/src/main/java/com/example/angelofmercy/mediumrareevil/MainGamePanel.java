@@ -110,7 +110,7 @@ public class MainGamePanel extends SurfaceView implements SurfaceHolder.Callback
             //This call refreshes the canvas, ready to be updated for the next frame.
             canvas.drawColor(0, PorterDuff.Mode.CLEAR);
 
-            map.draw(canvas);
+            game.draw(canvas);
         }
     }
 
@@ -158,15 +158,18 @@ public class MainGamePanel extends SurfaceView implements SurfaceHolder.Callback
         Player players[] = {new Player("p0"), new Player("p1")};
 
         game = new Game(players, map);
+        game.setHighlights(BitmapFactory.decodeResource(getResources(), R.drawable.green_highlight),
+                BitmapFactory.decodeResource(getResources(), R.drawable.red_highlight));
 
         for(Piece p : map.getPieces()){
             String bitmapURL = p.getBitmapURL();
-            Log.d(TAG, "x: " + p.getLocation().x + ", y: " + p.getLocation().y + " [" + bitmapURL + "]");
 
             int id = context.getResources().getIdentifier(bitmapURL, "drawable", context.getPackageName());
 
             p.setBitmap(BitmapFactory.decodeResource(getResources(), id));
         }
+
+
 
 
         this.setZOrderOnTop(true);

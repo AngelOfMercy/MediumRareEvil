@@ -1,25 +1,23 @@
 package Game;
 
-import android.app.PendingIntent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
 import Game.Utility.Point;
 import java.util.ArrayList;
+import android.util.Log;
 
 import Game.Tiles.*;
 import Pieces.*;
 import Game.Game.Direction;
 
-/**
- * Created by AngelOfMercy on 28/01/2016.
- */
 public class Map{
 
+    private String TAG = Map.class.getSimpleName();
 
     private ArrayList<Piece> pieces = new ArrayList<Piece>();
 
-    public Tile[][] tileSet;
+    public Tile[][] tileset;
 
     /*Only used to setup the starting population for each player*/
     //N = None
@@ -67,11 +65,11 @@ public class Map{
         this.mapGraphics = mapBitmap;
         this.zoomedMapGraphics = resize(mapGraphics, 1.4f, 1.4f);
         this.origin = origin;
-        this.tileSet = new Tile[8][8];
+        this.tileset = new Tile[8][8];
 
-        for(int x = 0; x < tileSet.length; ++x){
-            for(int y = 0; y < tileSet[x].length; ++y){
-                tileSet[x][y] = new Tile(x, y, origin, cursorBitmap);
+        for(int x = 0; x < tileset.length; ++x){
+            for(int y = 0; y < tileset[x].length; ++y){
+                tileset[x][y] = new Tile(x, y, origin, cursorBitmap);
             }
         }
 
@@ -104,47 +102,47 @@ public class Map{
                         break;
                     case "W":
                         p = new WizardPiece(player, dir);
-                        tileSet[x][y].setPiece(p);
+                        tileset[x][y].setPiece(p);
                         pieces.add(p);
                         break;
                     case "S":
                         p = new SoldierPiece(player, dir);
-                        tileSet[x][y].setPiece(p);
+                        tileset[x][y].setPiece(p);
                         pieces.add(p);
                         break;
                     case "T":
                         p = new TrebuchetPiece(player, dir);
-                        tileSet[x][y].setPiece(p);
+                        tileset[x][y].setPiece(p);
                         pieces.add(p);
                         break;
                     case "P":
                         p = new PalisadePiece(player, dir);
-                        tileSet[x][y].setPiece(p);
+                        tileset[x][y].setPiece(p);
                         pieces.add(p);
                         break;
                     case "R":
                         p = new SpearmanPiece(player, dir);
-                        tileSet[x][y].setPiece(p);
+                        tileset[x][y].setPiece(p);
                         pieces.add(p);
                         break;
                     case "H":
                         p = new HeavyPiece(player, dir);
-                        tileSet[x][y].setPiece(p);
+                        tileset[x][y].setPiece(p);
                         pieces.add(p);
                         break;
                     case "A":
                         p = new ArcherPiece(player, dir);
-                        tileSet[x][y].setPiece(p);
+                        tileset[x][y].setPiece(p);
                         pieces.add(p);
                         break;
                     case "C":
                         p = new ClericPiece(player, dir);
-                        tileSet[x][y].setPiece(p);
+                        tileset[x][y].setPiece(p);
                         pieces.add(p);
                         break;
                     case "B":
                         p = new SoldierPiece(player, dir);
-                        tileSet[x][y].setPiece(p);
+                        tileset[x][y].setPiece(p);
                         pieces.add(p);
                         break;
                 }
@@ -167,28 +165,28 @@ public class Map{
                 if (y < 0) {
                     y = 0;
                 }
-                cursor.setLocation(tileSet[x][y]);
+                cursor.setLocation(tileset[x][y]);
                 break;
             case DOWN:
                 ++y;
                 if (y > 8) {
                     y = 8;
                 }
-                cursor.setLocation(tileSet[x][y]);
+                cursor.setLocation(tileset[x][y]);
                 break;
             case LEFT:
                 ++x;
                 if (x > 8) {
                     x = 8;
                 }
-                cursor.setLocation(tileSet[x][y]);
+                cursor.setLocation(tileset[x][y]);
                 break;
             case RIGHT:
                 --x;
                 if (x < 0) {
                     x = 0;
                 }
-                cursor.setLocation(tileSet[x][y]);
+                cursor.setLocation(tileset[x][y]);
                 break;
         }
         return true;
@@ -230,13 +228,18 @@ public class Map{
         return getTileAt(x, y);
     }
 
-    public ArrayList<Tile> getValidMovement(Piece p){
-        ArrayList<Point> possibleTiles = p.getPossibleMoves();
-        ArrayList<Tile> moveTiles = new ArrayList<Tile>();
-        ArrayList<Tile> attackTiles = new ArrayList<Tile>();
-        return null;
-    }
+    public void select(Piece p){
+        p.findPossibleMoves(tileset);
+        Log.d(TAG, "Movetiles: ");
+        for(Tile tile : p.moveTiles){
+            Log.d(TAG, "x: " + tile.getX() + ", y: " + tile.getY());
+        }
 
+        Log.d(TAG, "Attacktiles: ");
+        for(Tile tile : p.attackTiles){
+            Log.d(TAG, "x: " + tile.getX() + ", y: " + tile.getY());
+        }
+    }
 
     //-------------------------------------------------------------
     //Getters and Setters
@@ -244,7 +247,7 @@ public class Map{
 
     /*Method to return the tile at a location*/
     public Tile getTileAt(int x, int y){
-        return tileSet[x][y];
+        return tileset[x][y];
     }
 
     /*Method to move a piece from one tile to another*/
@@ -293,9 +296,16 @@ public class Map{
         return pieces;
     }
 
+    /**
+     * Resize a bitmap by a by an x and y scalar
+     * @param b bitmap to be resized
+     * @param scaleX amount to scale horizontally
+     * @param scaleY amount to scale vertically
+     * @return the resized bitmap
+     */
     private Bitmap resize(Bitmap b, float scaleX, float scaleY){
-        int sizeX = (int)(mapGraphics.getWidth() * scaleX);
-        int sizeY = (int)(mapGraphics.getHeight() * scaleY);
+        int sizeX = (int)(b.getWidth() * scaleX);
+        int sizeY = (int)(b.getHeight() * scaleY);
         return Bitmap.createScaledBitmap(b, sizeX, sizeY, false);
     }
 
@@ -305,20 +315,22 @@ public class Map{
         cursor.setZoom(z);
         this.origin = o;
 
-        for(int i = 0; i < tileSet.length; ++i){
-            for(int j = 0; j < tileSet[i].length; ++j){
-                tileSet[i][j].setOrigin(o);
-                tileSet[i][j].calculateScreenPos(z);
+        for(int i = 0; i < tileset.length; ++i){
+            for(int j = 0; j < tileset[i].length; ++j){
+                tileset[i][j].setOrigin(o);
+                tileset[i][j].calculateScreenPos(z);
             }
         }
     }
 
+    public boolean getZoom(){ return zoomed; }
+
     /*Debug method for grid UI adjustment*/
     public void setGrid(float x, float xMod, float y, float yMod, Point o){
         this.origin = o;
-        for(int i = 0; i < tileSet.length; ++i){
-            for(int j = 0; j < tileSet[i].length; ++j){
-                tileSet[i][j].setConstants(x, xMod, y, yMod, o);
+        for(int i = 0; i < tileset.length; ++i){
+            for(int j = 0; j < tileset[i].length; ++j){
+                tileset[i][j].setConstants(x, xMod, y, yMod, o);
             }
         }
     }
@@ -342,9 +354,9 @@ public class Map{
         }
         //Comment or uncomment this to toggle the debug grid placement view.
         /*
-        for(int x = 0; x < tileSet.length; ++x){
-            for(int y = 0; y < tileSet[x].length; ++y){
-                tileSet[x][y].debugDraw(canvas);
+        for(int x = 0; x < tileset.length; ++x){
+            for(int y = 0; y < tileset[x].length; ++y){
+                tileset[x][y].debugDraw(canvas);
             }
         }
         */

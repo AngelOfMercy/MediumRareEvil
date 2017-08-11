@@ -5,10 +5,6 @@ import java.util.ArrayList;
 import Game.Game;
 import Game.Tiles.Tile;
 import Game.Utility.Point;
-
-/**
- * Created by Larry on 7/17/2017.
- */
 public class PalisadePiece extends Piece implements Ruleset{
     public PalisadePiece(int OWNER_ID, Game.Direction dir){
         super("palisade", OWNER_ID, dir);
@@ -20,23 +16,22 @@ public class PalisadePiece extends Piece implements Ruleset{
      * @return the set of coordinates
      */
     @Override
-    public ArrayList<Point> getPossibleMoves(){
-        ArrayList<Point> tiles = new ArrayList<>();
+    public void findPossibleMoves(Tile[][] tileset){
         int x = (int)this.getLocation().x;
         int y = (int)this.getLocation().y;
-        if(this.getOwnerID() == 1){
-            tiles.add(new Point(x, y + 1));
-            tiles.add(new Point(x, y + 2));
-            tiles.add(new Point(x + 1, y + 1));
-            tiles.add(new Point(x - 1, y + 1));
+        if(this.getOwnerID() == 0){
+            for(int i = y + 1, k = 0; i < 8 && k < 2; ++i, ++k){
+                checkTile(tileset[x][i]);
+            }
+            if(x < 7 && y < 7){ checkTile(tileset[x + 1][y + 1]); }
+            if(x > 0 && y < 7){ checkTile(tileset[x - 1][y + 1]); }
         }
         else{
-            tiles.add(new Point(x, y - 1));
-            tiles.add(new Point(x, y - 2));
-            tiles.add(new Point(x + 1, y - 1));
-            tiles.add(new Point(x - 1, y - 1));
+            for(int i = y - 1, k = 0; i >= 0 && k < 2; --i, ++k){
+                checkTile(tileset[x][i]);
+            }
+            if(x < 7 && y > 0){ checkTile(tileset[x + 1][y - 1]); }
+            if(x > 0 && y > 0){ checkTile(tileset[x - 1][y - 1]); }
         }
-
-        return tiles;
     }
 }

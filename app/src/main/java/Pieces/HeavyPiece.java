@@ -5,10 +5,6 @@ import java.util.ArrayList;
 import Game.Game;
 import Game.Tiles.Tile;
 import Game.Utility.Point;
-
-/**
- * Created by Larry on 7/17/2017.
- */
 public class HeavyPiece extends Piece implements Ruleset{
     public HeavyPiece(int OWNER_ID, Game.Direction dir){
         super("heavy", OWNER_ID, dir);
@@ -20,32 +16,58 @@ public class HeavyPiece extends Piece implements Ruleset{
      * @return the set of coordinates
      */
     @Override
-    public ArrayList<Point> getPossibleMoves(){
-        ArrayList<Point> tiles = new ArrayList<>();
+    public void findPossibleMoves(Tile[][] tileset){
         int x = (int)this.getLocation().x;
         int y = (int)this.getLocation().y;
 
-        tiles.add(new Point(x + 1, y));
-        tiles.add(new Point(x + 2, y));
-        tiles.add(new Point(x - 1, y));
-        tiles.add(new Point(x - 2, y));
-
-        tiles.add(new Point(x, y + 1));
-        tiles.add(new Point(x, y + 2));
-        tiles.add(new Point(x, y - 1));
-        tiles.add(new Point(x, y - 2));
-
-        tiles.add(new Point(x + 1, y + 1));
-        tiles.add(new Point(x + 2, y + 2));
-        tiles.add(new Point(x - 1, y - 1));
-        tiles.add(new Point(x - 2, y - 2));
-
-        tiles.add(new Point(x + 1, y - 1));
-        tiles.add(new Point(x + 2, y - 2));
-        tiles.add(new Point(x - 1, y + 1));
-        tiles.add(new Point(x - 2, y + 2));
-
-        return tiles;
+        //south east
+        for(int i = x + 1,  j = y + 1, k = 0; i < 8 && j < 8 && k < 2; ++i, ++j, ++k){
+            if(checkTile(tileset[i][j])){
+                break;
+            }
+        }
+        //north east
+        for(int i = x,  j = y, k = 0; i < 8 && j < 0 && k < 2; ++i, --j, ++k){
+            if(checkTile(tileset[i][j])){
+                break;
+            }
+        }
+        //south west
+        for(int i = x,  j = y, k = 0; i < 0 && j < 8 && k < 0; --i, ++j, ++k){
+            if(checkTile(tileset[i][j])){
+                break;
+            }
+        }
+        //north west
+        for(int i = x,  j = y, k = 0; i < 0 && j < 0 && k < 0; --i, --j, ++k){
+            if(checkTile(tileset[i][j])){
+                break;
+            }
+        }
+        //East
+        for(int i = x, k = 0; i < 7 && k < 2; ++i, ++k){
+            if(checkTile(tileset[i][y])){
+                break;
+            }
+        }
+        //West
+        for(int i = x, k = 0; i >= 0 && k < 2; ++i, ++k){
+            if(checkTile(tileset[i][y])){
+                break;
+            }
+        }
+        //South
+        for(int i = y, k = 0; i < 7 && k < 2; ++i, ++k){
+            if(checkTile(tileset[x][i])){
+                break;
+            }
+        }
+        //North
+        for(int i = y, k = 0; i >= 0 && k < 2; ++i, ++k){
+            if(checkTile(tileset[x][i])){
+                break;
+            }
+        }
     }
 
 }
