@@ -10,6 +10,7 @@ import android.util.Log;
 import Game.Tiles.*;
 import Pieces.*;
 import Game.Game.Direction;
+import Animation.Animation;
 
 public class Map{
 
@@ -18,6 +19,8 @@ public class Map{
     private ArrayList<Piece> pieces = new ArrayList<Piece>();
 
     public Tile[][] tileset;
+
+    public Animation currentAnimation;
 
     /*Only used to setup the starting population for each player*/
     //N = None
@@ -250,12 +253,6 @@ public class Map{
         return tileset[x][y];
     }
 
-    /*Method to move a piece from one tile to another*/
-    public void movePiece(Tile t1, Tile t2){
-        t2.setPiece(t1.getPiece());
-        t1.removePiece();
-    }
-
     /*Method to translate points for easier programming*/
     public Tile getTileAt(Point p){
         int x = (int)p.x;
@@ -345,12 +342,25 @@ public class Map{
                     (canvas.getWidth() / 2) - (mapGraphics.getWidth() / 2),
                     (canvas.getHeight() / 2) - (mapGraphics.getHeight() / 2),
                     null);
+            //TODO account for zoomed graphics
+            if(currentAnimation!=null){
+                if(currentAnimation.isMoving()){
+                    currentAnimation.move();
+                }
+                currentAnimation.tick();
+                currentAnimation.draw(canvas);
+            }
         }
         else {
             canvas.drawBitmap(zoomedMapGraphics,
                     (canvas.getWidth() / 2) - (zoomedMapGraphics.getWidth() / 2),
                     (canvas.getHeight() / 2) - (zoomedMapGraphics.getHeight() / 2),
                     null);
+            //TODO account for zoomed graphics
+            if(currentAnimation!=null){
+                currentAnimation.tick();
+                currentAnimation.draw(canvas);
+            }
         }
         //Comment or uncomment this to toggle the debug grid placement view.
         /*
@@ -361,9 +371,5 @@ public class Map{
         }
         */
 
-        cursor.draw(canvas);
-        for(Piece p : pieces){
-            p.draw(canvas, getTileAt(p.getLocation()).getScreenLocation());
-        }
     }
 }

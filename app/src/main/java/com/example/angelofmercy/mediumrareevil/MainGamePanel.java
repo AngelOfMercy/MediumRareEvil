@@ -19,7 +19,9 @@ import android.view.SurfaceHolder;
 
 import java.io.File;
 
+import Animation.Animation;
 import Game.*;
+import Game.Tiles.Tile;
 import Game.Utility.Point;
 import Pieces.Piece;
 
@@ -40,20 +42,25 @@ public class MainGamePanel extends SurfaceView implements SurfaceHolder.Callback
 
     public boolean zoomed = false;
 
+    private Context context;
+
     /**
      * Implementing the SurfaceView window in XML requires these three constructors
      */
     public MainGamePanel (Context context){
         super(context);
-        init(context);
+        this.context = context;
+        init();
     }
     public MainGamePanel (Context context, AttributeSet attrs){
         super(context, attrs);
-        init(context);
+        this.context = context;
+        init();
     }
     public MainGamePanel (Context context, AttributeSet attrs, int defStyle){
         super(context, attrs, defStyle);
-        init(context);
+        this.context = context;
+        init();
     }
 
     @Override
@@ -140,16 +147,118 @@ public class MainGamePanel extends SurfaceView implements SurfaceHolder.Callback
         map.moveCursor(d);
     }
 
+    /**
+     * Handles contextual selection
+     */
     public void select(){
-        game.select();
+        //Get tile the cursor is on
+        Tile tile = game.select();
+
+        //If tile has a piece on it, check if...
+        //-piece belongs to current player
+        //  -if yes, set this as selected piece
+        //  -if no, check if we already have a piece selected
+        //      -if yes, check if we can attack this piece
+        //          -if yes, build move and attack animation and pass on
+        //          -if no, do nothing
+        //      -if no, do nothing
+        //If tile does not have a piece, check if...
+        //-we have a piece selected
+        //  -if yes, check if we can move to this space
+        //      -if yes, build move animation and pass on
+        //      -if no, do nothing
+        //  -if no, do nothing
+
+        //If tile has piece
+        if(tile.hasPiece()){
+            Piece p = tile.getPiece();
+            //If piece belongs to current player
+            if(p.getOwnerID() == game.getCurrentPlayer()){
+                game.selected = p;
+                p.findPossibleMoves(game.getMap().tileset);
+            }
+            //Else if piece does not belong to current player but we already have a piece selected
+            else if(game.selected != null){
+                //If selected piece can attack
+                if(game.checkMove(game.selected, tile)){
+                    Animation m = getAnim(buildAnimURL(game.selected, 1), game.selected, true);
+                    Animation a = getAnim(buildAnimURL(game.selected, 2), game.selected, false);
+                    //game.attack(m, a, game.selected, tile);
+                }
+            }
+        }
+        //If tile does not have a piece
+        else{
+            //If we already have a piece selected
+            if(game.selected != null){
+                //If selected piece can move to this tile
+                if(game.checkMove(game.selected, tile)){
+                    Animation m = getAnim(buildAnimURL(game.selected, 1), game.selected, true);
+                    game.move(m, game.selected, tile);
+                }
+            }
+        }
     }
 
-    public Map getMap(){
-        return map;
+    /**
+     * Return a string pertaining to the name of the bitmap of the animation strip we want
+     * the format is "_OwnerID_Direction_PieceName_Action"
+     * @param p The piece we are animating
+     * @param action The action we want (0 = death, 1 = walk, 2 = attack)
+     * @return The final string
+     */
+    private String buildAnimURL(Piece p, int action){
+        StringBuilder sb = new StringBuilder("_");
+        if(p.getOwnerID() == 1){
+            sb.append("blue");
+        }
+        else{
+            sb.append("blue");
+        }
+
+        sb.append("_");
+
+        switch (p.getFacing()){
+            case DOWN:
+                sb.append("down");
+                break;
+            case UP:
+                sb.append("up");
+                break;
+            case LEFT:
+                sb.append("left");
+                break;
+            case RIGHT:
+                sb.append("right");
+                break;
+        }
+
+        sb.append("_");
+        sb.append(p.getName());
+        sb.append("_");
+        switch (action){
+            case 0:
+                sb.append("death");
+                break;
+            case 1:
+                sb.append("walk");
+                break;
+            case 2:
+                sb.append("attack");
+                break;
+        }
+        return sb.toString();
+    }
+
+    private Animation getAnim(String animURL, Piece p, boolean moving){
+        int id = context.getResources().getIdentifier(animURL, "drawable", context.getPackageName());
+        Bitmap animationStrip = BitmapFactory.decodeResource(getResources(), id);
+        //TODO We need a bit of ugliness to account for different frame sizes
+        return new Animation(animationStrip, 50, 50, 100, p.xOff, p.yOff, moving);
     }
 
     //Utility method for the constructors, containing initializations for variables
-    private void init(Context context){
+    private void init(){
         getHolder().addCallback(this);
 
         map = new Map(BitmapFactory.decodeResource(getResources(), R.drawable.placeholder2),
@@ -158,8 +267,8 @@ public class MainGamePanel extends SurfaceView implements SurfaceHolder.Callback
         Player players[] = {new Player("p0"), new Player("p1")};
 
         game = new Game(players, map);
-        game.setHighlights(BitmapFactory.decodeResource(getResources(), R.drawable.green_highlight),
-                BitmapFactory.decodeResource(getResources(), R.drawable.red_highlight));
+        game.setHighlights(BitmapFactory.decodeResource(getResources(), R.drawable.green_highlight_2),
+                BitmapFactory.decodeResource(getResources(), R.drawable.red_highlight_2));
 
         for(Piece p : map.getPieces()){
             String bitmapURL = p.getBitmapURL();

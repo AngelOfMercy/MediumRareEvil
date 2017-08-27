@@ -27,11 +27,15 @@ public abstract class Piece {
 
     //Each image needs to be centered on its tile differently due to their different sizes, so have
     // an offset for each type of unit.
-    private int xOff = 0;
-    private int yOff = 0;
+    public int xOff = 0;
+    public int yOff = 0;
 
+    //When selected, store a list of possible move and attack tiles
     public ArrayList<Tile>moveTiles = new ArrayList<>();
     public ArrayList<Tile>attackTiles = new ArrayList<>();
+
+    //When animating, we dont want to draw the static image
+    public boolean animating = false;
 
     /**
      * Unit Statistics
@@ -197,6 +201,8 @@ public abstract class Piece {
         return ATTACK_DAMAGE;
     }
 
+    public Direction getFacing() { return UNIT_FACING; }
+
 
     public void findPossibleMoves(Tile[][] tileset){  }
 
@@ -273,7 +279,9 @@ public abstract class Piece {
 
 
     public void draw(Canvas canvas, Point p){
-                canvas.drawBitmap(bitmap, p.x + xOff,
-                p.y + yOff, null);
+        if(!animating) {
+            canvas.drawBitmap(bitmap, p.x + xOff,
+                    p.y + yOff, null);
+        }
     }
 }

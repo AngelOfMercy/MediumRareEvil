@@ -3,6 +3,7 @@ package Game;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
+import Animation.Animation;
 import Game.Tiles.Tile;
 import Pieces.Piece;
 
@@ -11,7 +12,7 @@ public class Game{
     private Player[] players;
     private int turn = 0;
 
-    private Piece selected;
+    public Piece selected;
 
     private Bitmap greenHighlights;
     private Bitmap zoomedGreenHighlights;
@@ -44,47 +45,49 @@ public class Game{
     public void nextTurn(){ ++turn; }
 
     /**
-     * Handles cursor selection by checking the tile the cursor is over and handling contextually
+     * Returns the tile the cursor is over
      * @return
      */
-    public boolean select(){
-        //Get tile cursor is over
-        Tile tile = map.getTileAt(map.cursor.xPos, map.cursor.yPos);
+    public Tile select() {
+        return map.cursor.getLocation();
+    }
 
-        //If there is a piece on this tile, make this the selected piece...
-        if(tile.hasPiece()){
-            Piece p = tile.getPiece();
+    /**
+     * Check if this piece can move to the given tile
+     * @param p The piece that is moving
+     * @param t The tile the piece is moving to
+     * @return
+     */
+    public boolean checkMove(Piece p, Tile t) {
 
-            //if it belongs to the correct player
-            if(p.getOwnerID() == (turn & 1)){
-                selected = p;
-                map.select(selected);
-                return true;
-            }
-
-            //Otherwise, check if we have a selected piece, if we do then we are probably attackng
-            //and enemy piece, so let the movepiece method handle this one.
-            else if(selected != null){
-                return movePiece(selected, tile);
-            }
+        if(!p.equals(selected)){
+            p.findPossibleMoves(map.tileset);
         }
-        //If we already have a piece selected, then attempt to move piece to this tile
-        else if(selected != null){
-            return movePiece(selected, tile);
+
+        if (p.moveTiles.contains(t) || p.attackTiles.contains(t)) {
+            return true;
         }
         return false;
     }
+
+    public void move(Animation anim, Piece p, Tile t){
+        p.animating = true;
+        map.getTileAt(p.getLocation()).removePiece();
+        t.setPiece(p);
+        map.currentAnimation = anim;
+    }
+
     /**
-     * Moves the given piece to the given tile
-     *
-     * @param p The piece to move
-     * @param t The tile to move the piece.
-     * @return Returns true if the piece was succesfully moved.
+     * Resize a bitmap by a by an x and y scalar
+     * @param b bitmap to be resized
+     * @param scaleX amount to scale horizontally
+     * @param scaleY amount to scale vertically
+     * @return the resized bitmap
      */
-    public boolean movePiece(Piece p, Tile t){
-        map.movePiece(map.getTileAt(p.getLocation()), t);
-        p.setLocation(t.getLocation());
-        return true;
+    private Bitmap resize(Bitmap b, float scaleX, float scaleY){
+        int sizeX = (int)(b.getWidth() * scaleX);
+        int sizeY = (int)(b.getHeight() * scaleY);
+        return Bitmap.createScaledBitmap(b, sizeX, sizeY, false);
     }
 
 
@@ -107,19 +110,6 @@ public class Game{
     }
 
     /**
-     * Resize a bitmap by a by an x and y scalar
-     * @param b bitmap to be resized
-     * @param scaleX amount to scale horizontally
-     * @param scaleY amount to scale vertically
-     * @return the resized bitmap
-     */
-    private Bitmap resize(Bitmap b, float scaleX, float scaleY){
-        int sizeX = (int)(b.getWidth() * scaleX);
-        int sizeY = (int)(b.getHeight() * scaleY);
-        return Bitmap.createScaledBitmap(b, sizeX, sizeY, false);
-    }
-
-    /**
      * Returns the current player.
      * @return
      */
@@ -138,8 +128,10 @@ public class Game{
      * @param canvas the canvas object to draw on
      */
     public void draw(Canvas canvas){
+        //1. draw scenery
         map.draw(canvas);
 
+        //2. draw highlighted tiles (if piece is selected)
         if(selected != null){
             if(!map.getZoom()){
                 for(Tile tile : selected.moveTiles) {
@@ -157,6 +149,14 @@ public class Game{
                     canvas.drawBitmap(zoomedRedHighlights, tile.screenPosX, tile.screenPosY, null);
                 }
             }
+        }
+
+        //3. draw cursor
+        map.cursor.draw(canvas);
+        //4. draw pieces
+        //TODO account for zoomed graphics
+        for(Piece p : map.getPieces()){
+            p.draw(canvas, map.getTileAt(p.getLocation()).getScreenLocation());
         }
     }
 }
